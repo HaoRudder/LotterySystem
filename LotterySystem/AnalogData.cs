@@ -15,6 +15,7 @@ namespace LotterySystem
     public partial class AnalogData : Form
     {
         public static OddsSetting from6;
+        public static AddRules from7;
         private static DataTable _Dt = new DataTable();
         static string _table;
         public AnalogData()
@@ -1185,6 +1186,20 @@ namespace LotterySystem
                 var reuslt = BLL.TrueBet.QueryForTheLatestBalance(website);
                 HandleInfo($"网站：{website}，最新余额为：{reuslt}");
             });
+        }
+
+        private void 添加规则ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (from7 == null)
+            {
+                from7 = new AddRules();
+                //from7.Assignment(0);
+                from7.Show();
+            }
+            else
+            {
+                from7.Activate();
+            }
         }
     }
 }

@@ -35,27 +35,27 @@ namespace GetTheLatestData
             update_Click(null, null);
             comboBox1.SelectedIndex = 0;
 
-            //// 注意判断关闭事件reason来源于窗体按钮，否则用菜单退出时无法退出!
-            //this.WindowState = FormWindowState.Minimized;
-            //this.notifyIcon1.Visible = true;
-            ////任务栏区显示图标
-            //this.ShowInTaskbar = false;
-            //this.Hide();
+            // 注意判断关闭事件reason来源于窗体按钮，否则用菜单退出时无法退出!
+            this.WindowState = FormWindowState.Minimized;
+            this.notifyIcon1.Visible = true;
+            //任务栏区显示图标
+            this.ShowInTaskbar = false;
+            this.Hide();
 
-            //if (this.WindowState == FormWindowState.Minimized)
-            //{
-            //    this.Visible = false;
-            //    notifyIcon1.Visible = true;
-            //    int tipShowMilliseconds = 1000;
-            //    string tipTitle = "数据采集器提醒";
-            //    string tipContent = "程序已启动";
-            //    ToolTipIcon tipType = ToolTipIcon.Info;
-            //    notifyIcon1.ShowBalloonTip(tipShowMilliseconds, tipTitle, tipContent, tipType);
-            //}
-            //else
-            //{
-            //    notifyIcon1.Visible = false;
-            //}
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Visible = false;
+                notifyIcon1.Visible = true;
+                int tipShowMilliseconds = 1000;
+                string tipTitle = "数据采集器提醒";
+                string tipContent = "程序已启动";
+                ToolTipIcon tipType = ToolTipIcon.Info;
+                notifyIcon1.ShowBalloonTip(tipShowMilliseconds, tipTitle, tipContent, tipType);
+            }
+            else
+            {
+                notifyIcon1.Visible = false;
+            }
         }
 
         /// <summary>
