@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -56,7 +57,7 @@ namespace Tool
         /// <param name="path">需要写入文件的地址</param>
         /// <param name="fileName">文件名称</param>
         /// <param name="content">文件内容</param>
-        /// <param name="isAppend">是否替换</param>
+        /// <param name="isAppend">是否追加</param>
         public static bool WriteFile(string path, string fileName, string content, bool isAppend = false)
         {
             try
@@ -66,16 +67,16 @@ namespace Tool
                     Directory.CreateDirectory(path);
                 }
 
-                var sw = new StreamWriter(path + "\\" + fileName, isAppend);
+                var sw = new StreamWriter(path + "\\" + fileName, isAppend, Encoding.UTF8);
                 sw.WriteLine(content);
                 sw.Close();//写入
-                return true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
                 return false;
             }
 
+            return true;
         }
 
         /// <summary>
@@ -331,7 +332,7 @@ namespace Tool
             {
                 path = Environment.CurrentDirectory + "//OddsSetting.ini";
             }
-            
+
             var list = ReadTheLocalFile(path).Trim();
             if (string.IsNullOrWhiteSpace(oddsName))
             {
@@ -359,7 +360,7 @@ namespace Tool
         /// </summary>
         /// <param name="oddsName">赔率名称</param>
         /// <param name="typeName">类型名称</param>
-        public static Dictionary<string,string> ReadSimulationSettings()
+        public static Dictionary<string, string> ReadSimulationSettings()
         {
             var path = Environment.CurrentDirectory + "//SimulationSettings.ini";
 
@@ -402,6 +403,20 @@ namespace Tool
                     }
                 }
             }
+        }
+
+        /// <summary>  
+        /// 获取Json的Model  
+        /// </summary>  
+        /// <typeparam name="T"></typeparam>  
+        /// <param name="json"></param>  
+        /// <returns></returns>  
+        public static T DeserializeObject<T>(string json)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            T obj = JsonConvert.DeserializeObject<T>(json);
+            return obj;
         }
 
         /// <summary>

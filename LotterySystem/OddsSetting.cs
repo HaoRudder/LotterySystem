@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BLL;
 
 namespace LotterySystem
 {
@@ -41,17 +42,6 @@ namespace LotterySystem
         private void button1_Click(object sender, EventArgs e)
         {
             var str = string.Empty;
-            if (_Type == 1)
-            {
-                str = Tool.Helper.ReadOddsSettings("", "", _Type);
-            }
-            else
-            {
-                str = Tool.Helper.ReadOddsSettings();
-            }
-
-            var list = str.Split('\n').ToList();
-            list.RemoveAll(x => x.Contains(comboBox1.Text));
 
             var baozitongsha = this.baozitongsha.CheckState;
             var baozihuiben = this.baozihuiben.CheckState;
@@ -111,25 +101,103 @@ namespace LotterySystem
             var xiaodandashuang = this.xiaodandashuang.Text;
             var duishunbao1314 = this.duishunbao1314.Text;
 
-            var content = $"{comboBox1.Text}-baozitongsha:{baozitongsha},baozihuiben:{baozihuiben },duizihuiben:{duizihuiben},shunzihuiben:{shunzihuiben},linjiuhuiben:{linjiuhuiben},dadan:{dadan},xiaodan:{xiaodan},dashuang:{dashuang},xiaoshuang:{xiaoshuang},duizi:{duizi},shunzi:{shunzi},baozi:{baozi}," +
-                          $"jishu:{jishu},da:{da},xiao:{xiao},dan:{dan},shuang:{shuang},tema0:{tema0},tema1:{tema1},tema2:{tema2},tema3:{tema3},tema4:{tema4},tema5:{tema5},tema6:{tema6},tema7:{tema7},tema8:{tema8},tema9:{tema9},tema10:{tema10},tema11:{tema11},tema12:{tema12},tema13:{tema13}," +
-                          $"tema14:{tema14},tema15:{tema15},tema16:{tema16},tema17:{tema17},tema18:{tema18},tema19:{tema19},tema20:{tema20},tema21:{tema21},tema22:{tema22},tema23:{tema23},tema24:{tema24},tema25:{tema25},tema26:{tema26},tema27:{tema27},topzuhe:{topzuhe},topsixiang:{topsixiang}," +
-                          $"toptema:{toptema},topduizi:{topduizi},downzuhe:{downzuhe},downsixiang:{downsixiang},downtema:{downtema},downduizi:{downduizi},fenshu:{fenshu},dadanxiaoshuang:{dadanxiaoshuang},xiaodandashuang:{xiaodandashuang},duishunbao1314:{duishunbao1314}" + "\n";
-            content = list.Aggregate(content, (current, item) => current + "\n" + item);
-
-            //content = str + "\n" + content;
-            var path = Environment.CurrentDirectory;
-            var name = string.Empty;
             if (_Type == 1)
             {
-                name = "OddsSettingManualSimulation.ini";
+                str = Tool.Helper.ReadOddsSettings("", "", _Type);
+
+                var list = str.Split('\n').ToList();
+                list.RemoveAll(x => x.Contains(comboBox1.Text));
+                var content = $"{comboBox1.Text}-baozitongsha:{baozitongsha},baozihuiben:{baozihuiben },duizihuiben:{duizihuiben},shunzihuiben:{shunzihuiben},linjiuhuiben:{linjiuhuiben},dadan:{dadan},xiaodan:{xiaodan},dashuang:{dashuang},xiaoshuang:{xiaoshuang},duizi:{duizi},shunzi:{shunzi},baozi:{baozi}," +
+                              $"jishu:{jishu},da:{da},xiao:{xiao},dan:{dan},shuang:{shuang},tema0:{tema0},tema1:{tema1},tema2:{tema2},tema3:{tema3},tema4:{tema4},tema5:{tema5},tema6:{tema6},tema7:{tema7},tema8:{tema8},tema9:{tema9},tema10:{tema10},tema11:{tema11},tema12:{tema12},tema13:{tema13}," +
+                              $"tema14:{tema14},tema15:{tema15},tema16:{tema16},tema17:{tema17},tema18:{tema18},tema19:{tema19},tema20:{tema20},tema21:{tema21},tema22:{tema22},tema23:{tema23},tema24:{tema24},tema25:{tema25},tema26:{tema26},tema27:{tema27},topzuhe:{topzuhe},topsixiang:{topsixiang}," +
+                              $"toptema:{toptema},topduizi:{topduizi},downzuhe:{downzuhe},downsixiang:{downsixiang},downtema:{downtema},downduizi:{downduizi},fenshu:{fenshu},dadanxiaoshuang:{dadanxiaoshuang},xiaodandashuang:{xiaodandashuang},duishunbao1314:{duishunbao1314}" + "\n";
+                content = list.Aggregate(content, (current, item) => current + "\n" + item);
+
+                //content = str + "\n" + content;
+                var path = Environment.CurrentDirectory;
+                var name = string.Empty;
+                if (_Type == 1)
+                {
+                    name = "OddsSettingManualSimulation.ini";
+                }
+                else
+                {
+                    name = "OddsSetting.ini";
+                }
+                var result = Tool.Helper.WriteFile(path, name, content);
+                if (result)
+                {
+                    MessageBox.Show("保存成功");
+                }
             }
             else
             {
-                name = "OddsSetting.ini";
+                str = Tool.Helper.ReadOddsSettings();
             }
-            var result = Tool.Helper.WriteFile(path, name, content);
-            if (result)
+
+            var isSuccess = BLL.OddsBusiness.ModifyOddssInfo(new OddssInfo
+            {
+                OddsName = comboBox1.Text,
+                baozitongsha = baozitongsha == CheckState.Checked,
+                baozihuiben = baozihuiben == CheckState.Checked,
+                duizihuiben = duizihuiben == CheckState.Checked,
+                shunzihuiben = shunzihuiben == CheckState.Checked,
+                linjiuhuiben = linjiuhuiben == CheckState.Checked,
+                dadan = Convert.ToInt32(dadan),
+                xiaodan = Convert.ToInt32(xiaodan),
+                dashuang = Convert.ToInt32(dashuang),
+                xiaoshuang = Convert.ToInt32(xiaoshuang),
+                duizi = Convert.ToInt32(duizi),
+                shunzi = Convert.ToInt32(shunzi),
+                baozi = Convert.ToInt32(baozi),
+                jishu = Convert.ToInt32(jishu),
+                da = Convert.ToInt32(da),
+                xiao = Convert.ToInt32(xiao),
+                dan = Convert.ToInt32(dan),
+                shuang = Convert.ToInt32(shuang),
+                tema0 = Convert.ToInt32(tema0),
+                tema1 = Convert.ToInt32(tema1),
+                tema2 = Convert.ToInt32(tema2),
+                tema3 = Convert.ToInt32(tema3),
+                tema4 = Convert.ToInt32(tema4),
+                tema5 = Convert.ToInt32(tema5),
+                tema6 = Convert.ToInt32(tema6),
+                tema7 = Convert.ToInt32(tema7),
+                tema8 = Convert.ToInt32(tema8),
+                tema9 = Convert.ToInt32(tema9),
+                tema10 = Convert.ToInt32(tema10),
+                tema11 = Convert.ToInt32(tema11),
+                tema12 = Convert.ToInt32(tema12),
+                tema13 = Convert.ToInt32(tema13),
+                tema14 = Convert.ToInt32(tema14),
+                tema15 = Convert.ToInt32(tema15),
+                tema16 = Convert.ToInt32(tema16),
+                tema17 = Convert.ToInt32(tema17),
+                tema18 = Convert.ToInt32(tema18),
+                tema19 = Convert.ToInt32(tema19),
+                tema20 = Convert.ToInt32(tema20),
+                tema21 = Convert.ToInt32(tema21),
+                tema22 = Convert.ToInt32(tema22),
+                tema23 = Convert.ToInt32(tema23),
+                tema24 = Convert.ToInt32(tema24),
+                tema25 = Convert.ToInt32(tema25),
+                tema26 = Convert.ToInt32(tema26),
+                tema27 = Convert.ToInt32(tema27),
+                topzuhe = Convert.ToInt32(topzuhe),
+                topsixiang = Convert.ToInt32(topsixiang),
+                toptema = Convert.ToInt32(toptema),
+                topduizi = Convert.ToInt32(topduizi),
+                downzuhe = Convert.ToInt32(downzuhe),
+                downsixiang = Convert.ToInt32(downsixiang),
+                downtema = Convert.ToInt32(downtema),
+                downduizi = Convert.ToInt32(downduizi),
+                fenshu = Convert.ToInt32(fenshu),
+                dadanxiaoshuang = Convert.ToInt32(dadanxiaoshuang),
+                xiaodandashuang = Convert.ToInt32(xiaodandashuang),
+                duishunbao1314 = Convert.ToInt32(duishunbao1314),
+            });
+
+            if (isSuccess)
             {
                 MessageBox.Show("保存成功");
             }
@@ -153,7 +221,7 @@ namespace LotterySystem
 
         private void comboBox1_TextChanged(object sender, EventArgs e)
         {
-            var list = Tool.Helper.ReadOddsSettings(comboBox1.Text,"",_Type);
+            var list = Tool.Helper.ReadOddsSettings(comboBox1.Text, "", _Type);
 
             //递归循环出页面所有控件
             var conList = new List<Control>();
