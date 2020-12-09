@@ -41,6 +41,12 @@ namespace LotterySystem
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+            //var zxc = BLL.OddsBusiness.GetOddssInfo();
+
+            //zxc[0].baozitongsha = true;
+            //var sd = BLL.OddsBusiness.ModifyOddssInfo(zxc[0]);
+
             var str = string.Empty;
 
             var baozitongsha = this.baozitongsha.CheckState;
@@ -135,71 +141,76 @@ namespace LotterySystem
                 str = Tool.Helper.ReadOddsSettings();
             }
 
-            var isSuccess = BLL.OddsBusiness.ModifyOddssInfo(new OddssInfo
+            var isSuccess = OddsBusiness.ModifyOddssInfo(new OddssInfo
             {
+                OddsID = Convert.ToInt32(comboBox1.Text.Substring(comboBox1.Text.Length - 1)),
                 OddsName = comboBox1.Text,
                 baozitongsha = baozitongsha == CheckState.Checked,
                 baozihuiben = baozihuiben == CheckState.Checked,
                 duizihuiben = duizihuiben == CheckState.Checked,
                 shunzihuiben = shunzihuiben == CheckState.Checked,
                 linjiuhuiben = linjiuhuiben == CheckState.Checked,
-                dadan = Convert.ToInt32(dadan),
-                xiaodan = Convert.ToInt32(xiaodan),
-                dashuang = Convert.ToInt32(dashuang),
-                xiaoshuang = Convert.ToInt32(xiaoshuang),
-                duizi = Convert.ToInt32(duizi),
-                shunzi = Convert.ToInt32(shunzi),
-                baozi = Convert.ToInt32(baozi),
-                jishu = Convert.ToInt32(jishu),
-                da = Convert.ToInt32(da),
-                xiao = Convert.ToInt32(xiao),
-                dan = Convert.ToInt32(dan),
-                shuang = Convert.ToInt32(shuang),
-                tema0 = Convert.ToInt32(tema0),
-                tema1 = Convert.ToInt32(tema1),
-                tema2 = Convert.ToInt32(tema2),
-                tema3 = Convert.ToInt32(tema3),
-                tema4 = Convert.ToInt32(tema4),
-                tema5 = Convert.ToInt32(tema5),
-                tema6 = Convert.ToInt32(tema6),
-                tema7 = Convert.ToInt32(tema7),
-                tema8 = Convert.ToInt32(tema8),
-                tema9 = Convert.ToInt32(tema9),
-                tema10 = Convert.ToInt32(tema10),
-                tema11 = Convert.ToInt32(tema11),
-                tema12 = Convert.ToInt32(tema12),
-                tema13 = Convert.ToInt32(tema13),
-                tema14 = Convert.ToInt32(tema14),
-                tema15 = Convert.ToInt32(tema15),
-                tema16 = Convert.ToInt32(tema16),
-                tema17 = Convert.ToInt32(tema17),
-                tema18 = Convert.ToInt32(tema18),
-                tema19 = Convert.ToInt32(tema19),
-                tema20 = Convert.ToInt32(tema20),
-                tema21 = Convert.ToInt32(tema21),
-                tema22 = Convert.ToInt32(tema22),
-                tema23 = Convert.ToInt32(tema23),
-                tema24 = Convert.ToInt32(tema24),
-                tema25 = Convert.ToInt32(tema25),
-                tema26 = Convert.ToInt32(tema26),
-                tema27 = Convert.ToInt32(tema27),
-                topzuhe = Convert.ToInt32(topzuhe),
-                topsixiang = Convert.ToInt32(topsixiang),
-                toptema = Convert.ToInt32(toptema),
-                topduizi = Convert.ToInt32(topduizi),
-                downzuhe = Convert.ToInt32(downzuhe),
-                downsixiang = Convert.ToInt32(downsixiang),
-                downtema = Convert.ToInt32(downtema),
-                downduizi = Convert.ToInt32(downduizi),
-                fenshu = Convert.ToInt32(fenshu),
-                dadanxiaoshuang = Convert.ToInt32(dadanxiaoshuang),
-                xiaodandashuang = Convert.ToInt32(xiaodandashuang),
-                duishunbao1314 = Convert.ToInt32(duishunbao1314),
+                dadan = Convert.ToDecimal(dadan),
+                xiaodan = Convert.ToDecimal(xiaodan),
+                dashuang = Convert.ToDecimal(dashuang),
+                xiaoshuang = Convert.ToDecimal(xiaoshuang),
+                duizi = Convert.ToDecimal(duizi),
+                shunzi = Convert.ToDecimal(shunzi),
+                baozi = Convert.ToDecimal(baozi),
+                jishu = Convert.ToDecimal(jishu),
+                da = Convert.ToDecimal(da),
+                xiao = Convert.ToDecimal(xiao),
+                dan = Convert.ToDecimal(dan),
+                shuang = Convert.ToDecimal(shuang),
+                tema0 = Convert.ToDecimal(tema0),
+                tema1 = Convert.ToDecimal(tema1),
+                tema2 = Convert.ToDecimal(tema2),
+                tema3 = Convert.ToDecimal(tema3),
+                tema4 = Convert.ToDecimal(tema4),
+                tema5 = Convert.ToDecimal(tema5),
+                tema6 = Convert.ToDecimal(tema6),
+                tema7 = Convert.ToDecimal(tema7),
+                tema8 = Convert.ToDecimal(tema8),
+                tema9 = Convert.ToDecimal(tema9),
+                tema10 = Convert.ToDecimal(tema10),
+                tema11 = Convert.ToDecimal(tema11),
+                tema12 = Convert.ToDecimal(tema12),
+                tema13 = Convert.ToDecimal(tema13),
+                tema14 = Convert.ToDecimal(tema14),
+                tema15 = Convert.ToDecimal(tema15),
+                tema16 = Convert.ToDecimal(tema16),
+                tema17 = Convert.ToDecimal(tema17),
+                tema18 = Convert.ToDecimal(tema18),
+                tema19 = Convert.ToDecimal(tema19),
+                tema20 = Convert.ToDecimal(tema20),
+                tema21 = Convert.ToDecimal(tema21),
+                tema22 = Convert.ToDecimal(tema22),
+                tema23 = Convert.ToDecimal(tema23),
+                tema24 = Convert.ToDecimal(tema24),
+                tema25 = Convert.ToDecimal(tema25),
+                tema26 = Convert.ToDecimal(tema26),
+                tema27 = Convert.ToDecimal(tema27),
+                topzuhe = Convert.ToDecimal(topzuhe),
+                topsixiang = Convert.ToDecimal(topsixiang),
+                toptema = Convert.ToDecimal(toptema),
+                topduizi = Convert.ToDecimal(topduizi),
+                downzuhe = Convert.ToDecimal(downzuhe),
+                downsixiang = Convert.ToDecimal(downsixiang),
+                downtema = Convert.ToDecimal(downtema),
+                downduizi = Convert.ToDecimal(downduizi),
+                fenshu = Convert.ToDecimal(fenshu),
+                dadanxiaoshuang = Convert.ToDecimal(dadanxiaoshuang),
+                xiaodandashuang = Convert.ToDecimal(xiaodandashuang),
+                duishunbao1314 = Convert.ToDecimal(duishunbao1314),
             });
 
             if (isSuccess)
             {
                 MessageBox.Show("保存成功");
+            }
+            else
+            {
+                MessageBox.Show("保存失败");
             }
         }
 
@@ -223,6 +234,8 @@ namespace LotterySystem
         {
             var list = Tool.Helper.ReadOddsSettings(comboBox1.Text, "", _Type);
 
+            var model = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsName == comboBox1.Text);
+
             //递归循环出页面所有控件
             var conList = new List<Control>();
             foreach (Control ctl in Controls)
@@ -245,18 +258,36 @@ namespace LotterySystem
             }
 
             var strList = list.Split('-')[1].Split(',').ToList();
-            foreach (var item in strList)
+            //foreach (var item in strList)
+            //{
+            //    var che = cheCon.FirstOrDefault(x => x.Name == item.Split(':')[0]);
+            //    var txt = textCon.FirstOrDefault(x => x.Name == item.Split(':')[0]);
+            //    if (txt != null)
+            //    {
+            //        txt.Text = item.Split(':')[1];
+            //    }
+            //    if (che != null)
+            //    {
+            //        ((CheckBox)che).CheckState = item.Split(':')[1] == "Unchecked" ? CheckState.Unchecked : CheckState.Checked;
+            //    }
+            //}
+
+            var modelProperties = model.GetType().GetProperties();
+            foreach (System.Reflection.PropertyInfo p in modelProperties)
             {
-                var che = cheCon.FirstOrDefault(x => x.Name == item.Split(':')[0]);
-                var txt = textCon.FirstOrDefault(x => x.Name == item.Split(':')[0]);
+                var txt = textCon.FirstOrDefault(x => x.Name == p.Name);
                 if (txt != null)
                 {
-                    txt.Text = item.Split(':')[1];
+                    txt.Text = p.GetValue(model).ToString();
                 }
+                var che = cheCon.FirstOrDefault(x => x.Name == p.Name);
                 if (che != null)
                 {
-                    ((CheckBox)che).CheckState = item.Split(':')[1] == "Unchecked" ? CheckState.Unchecked : CheckState.Checked;
+                    ((CheckBox)che).CheckState = Convert.ToBoolean(p.GetValue(model)) ? CheckState.Checked : CheckState.Unchecked;
                 }
+
+
+                Console.WriteLine("Name:{0} Value:{1}", p.Name, p.GetValue(model));
             }
         }
     }

@@ -36,11 +36,6 @@ namespace LotterySystem
 
         private void 赔率设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var zxc = BLL.OddsBusiness.GetOddssInfo();
-
-            zxc[0].baozitongsha = true;
-            var sd = BLL.OddsBusiness.ModifyOddssInfo(zxc[0]);
-
             if (from6 == null)
             {
                 from6 = new OddsSetting();

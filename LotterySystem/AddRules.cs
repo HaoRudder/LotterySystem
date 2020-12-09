@@ -136,5 +136,11 @@ namespace LotterySystem
             }
             textBox9.Text = !string.IsNullOrWhiteSpace(str) ? str.Substring(0, str.Length - 1) : "";
         }
+
+        private void AddRules_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AnalogData.from7 = null;
+            ManualSimulation.from7 = null;
+        }
     }
 }

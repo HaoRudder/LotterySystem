@@ -550,6 +550,7 @@ namespace LotterySystem
             this.Controls.Add(this.groupBox1);
             this.Name = "AddRules";
             this.Text = "添加规则";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AddRules_FormClosing);
             this.Load += new System.EventHandler(this.AddRules_Load);
             this.Click += new System.EventHandler(this.AddRules_Click);
             this.groupBox1.ResumeLayout(false);
