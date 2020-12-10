@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -246,7 +247,7 @@ namespace Tool
                     case ConfigurationType.AutomaticExportEntities:
                         return $"Data Source = {list.Split('\n')[0].Split(':')[1]}; Initial Catalog = {list.Split('\n')[1].Split(':')[1]}; User ID = { list.Split('\n')[2].Split(':')[1]}; Password = { list.Split('\n')[3].Split(':')[1]};Character Set=utf8;";
                     case ConfigurationType.Localhost:
-                        return $"Data Source =localhost; Initial Catalog = cccc; User ID = { list.Split('\n')[4].Split(':')[1]}; Password = { list.Split('\n')[5].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+                        return $"Data Source =localhost; Initial Catalog = game_spider; User ID = { list.Split('\n')[4].Split(':')[1]}; Password = { list.Split('\n')[5].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
                     case ConfigurationType.ProgramPath:
                         return list.Split('\n')[13].Substring(list.Split('\n')[13].LastIndexOf(':') - 1, list.Split('\n')[13].Length - list.Split('\n')[13].LastIndexOf(':') + 1);
                     case ConfigurationType.LotterySystemPath:
@@ -523,6 +524,70 @@ namespace Tool
                 return str.Split(',')[1].Split(':')[1];
             }
             return string.Empty;
+        }
+
+
+        /// <summary>
+        /// DataTable 转换为 List<T>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static List<T> ToList<T>(this DataTable dt) where T : class, new()
+        {
+            Type t = typeof(T);
+            PropertyInfo[] propertys = t.GetProperties();
+            List<T> lst = new List<T>();
+            string typeName = string.Empty;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                T entity = new T();
+                foreach (PropertyInfo pi in propertys)
+                {
+                    typeName = pi.Name;
+                    if (dt.Columns.Contains(typeName))
+                    {
+                        if (!pi.CanWrite) continue;
+                        object value = dr[typeName];
+                        if (value == DBNull.Value) continue;
+                        if (pi.PropertyType == typeof(string))
+                        {
+                            pi.SetValue(entity, value.ToString(), null);
+                        }
+                        else if (pi.PropertyType == typeof(int) || pi.PropertyType == typeof(int?))
+                        {
+                            pi.SetValue(entity, int.Parse(value.ToString()), null);
+                        }
+                        else if (pi.PropertyType == typeof(DateTime?) || pi.PropertyType == typeof(DateTime))
+                        {
+                            pi.SetValue(entity, DateTime.Parse(value.ToString()), null);
+                        }
+                        else if (pi.PropertyType == typeof(float) || pi.PropertyType == typeof(float?))
+                        {
+                            pi.SetValue(entity, float.Parse(value.ToString()), null);
+                        }
+                        else if (pi.PropertyType == typeof(double) || pi.PropertyType == typeof(double?))
+                        {
+                            pi.SetValue(entity, double.Parse(value.ToString()), null);
+                        }
+                        else if (pi.PropertyType == typeof(byte) || pi.PropertyType == typeof(byte?))
+                        {
+                            pi.SetValue(entity, byte.Parse(value.ToString()), null);
+                        }
+                        else if (pi.PropertyType == typeof(Int16) || pi.PropertyType == typeof(Int16?))
+                        {
+                            pi.SetValue(entity, Int16.Parse(value.ToString()), null);
+                        }
+                        else
+                        {
+                            pi.SetValue(entity, value, null);
+                        }
+                    }
+                }
+                lst.Add(entity);
+            }
+            return lst;
         }
     }
 

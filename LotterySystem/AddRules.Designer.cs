@@ -29,9 +29,9 @@ namespace LotterySystem
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.checkedListBox3 = new System.Windows.Forms.CheckedListBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
@@ -60,21 +60,22 @@ namespace LotterySystem
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.list = new System.Windows.Forms.DataGridView();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.list = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.list)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.list);
+            this.groupBox1.Controls.Add(this.textBox10);
+            this.groupBox1.Controls.Add(this.checkedListBox3);
             this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.textBox9);
             this.groupBox1.Controls.Add(this.checkedListBox2);
@@ -103,9 +104,7 @@ namespace LotterySystem
             this.groupBox1.Controls.Add(this.textBox5);
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this.list);
             this.groupBox1.Controls.Add(this.checkBox2);
-            this.groupBox1.Controls.Add(this.comboBox4);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.textBox2);
             this.groupBox1.Controls.Add(this.label3);
@@ -118,6 +117,42 @@ namespace LotterySystem
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "自动投注规则";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(564, 20);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(100, 21);
+            this.textBox10.TabIndex = 55;
+            this.textBox10.Click += new System.EventHandler(this.textBox3_Click);
+            // 
+            // checkedListBox3
+            // 
+            this.checkedListBox3.CheckOnClick = true;
+            this.checkedListBox3.FormattingEnabled = true;
+            this.checkedListBox3.Items.AddRange(new object[] {
+            "大",
+            "小",
+            "单",
+            "双",
+            "大单",
+            "大双",
+            "小单",
+            "小双",
+            "极大",
+            "极小",
+            "对子",
+            "顺子",
+            "豹子",
+            "特码13",
+            "特码14"});
+            this.checkedListBox3.Location = new System.Drawing.Point(564, 39);
+            this.checkedListBox3.Name = "checkedListBox3";
+            this.checkedListBox3.Size = new System.Drawing.Size(100, 244);
+            this.checkedListBox3.TabIndex = 54;
+            this.checkedListBox3.Visible = false;
+            this.checkedListBox3.SelectedIndexChanged += new System.EventHandler(this.checkedListBox3_SelectedIndexChanged);
             // 
             // checkBox1
             // 
@@ -424,38 +459,6 @@ namespace LotterySystem
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // list
-            // 
-            this.list.AllowUserToAddRows = false;
-            this.list.AllowUserToDeleteRows = false;
-            this.list.AllowUserToResizeColumns = false;
-            this.list.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.list.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.list.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.list.DefaultCellStyle = dataGridViewCellStyle2;
-            this.list.Location = new System.Drawing.Point(12, 183);
-            this.list.Name = "list";
-            this.list.RowHeadersVisible = false;
-            this.list.RowHeadersWidth = 20;
-            this.list.RowTemplate.Height = 23;
-            this.list.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.list.Size = new System.Drawing.Size(652, 245);
-            this.list.TabIndex = 15;
-            // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
@@ -465,29 +468,6 @@ namespace LotterySystem
             this.checkBox2.TabIndex = 11;
             this.checkBox2.Text = "转向投注中奖后继续转向直到未中后恢复";
             this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Items.AddRange(new object[] {
-            "大",
-            "小",
-            "单",
-            "双",
-            "大单",
-            "大双",
-            "小单",
-            "小双",
-            "极大",
-            "极小",
-            "对子",
-            "顺子",
-            "豹子"});
-            this.comboBox4.Location = new System.Drawing.Point(564, 21);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(100, 20);
-            this.comboBox4.TabIndex = 10;
             // 
             // label4
             // 
@@ -543,6 +523,16 @@ namespace LotterySystem
             this.comboBox2.Size = new System.Drawing.Size(77, 20);
             this.comboBox2.TabIndex = 3;
             // 
+            // list
+            // 
+            this.list.FormattingEnabled = true;
+            this.list.ItemHeight = 12;
+            this.list.Location = new System.Drawing.Point(7, 181);
+            this.list.Name = "list";
+            this.list.Size = new System.Drawing.Size(660, 244);
+            this.list.TabIndex = 56;
+            this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
+            // 
             // AddRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -556,7 +546,6 @@ namespace LotterySystem
             this.Click += new System.EventHandler(this.AddRules_Click);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.list)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -587,9 +576,7 @@ namespace LotterySystem
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.DataGridView list;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
@@ -601,5 +588,8 @@ namespace LotterySystem
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.CheckedListBox checkedListBox2;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.CheckedListBox checkedListBox3;
+        private System.Windows.Forms.ListBox list;
     }
 }

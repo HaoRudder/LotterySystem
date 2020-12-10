@@ -3,27 +3,120 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace BLL
 {
     public class RulesBusiness
     {
+        private static string _connString = string.Empty;
+        //private static string testConnString = string.Empty;
+        public RulesBusiness()
+        {
+            var path = Environment.CurrentDirectory + "//ConfigurationFile.ini";
+            var list = Tool.Helper.ReadTheLocalFile(path).Split('\n');
+            //_connString = $"Data Source ={list[0].Split(':')[1]}; Initial Catalog = {list[1].Split(':')[1]}; User ID ={list[3].Split(':')[1]}; Password ={list[3].Split(':')[1]};PORT= 33060 ;Character Set=utf8; Allow User Variables=True";
+            _connString = $"Data Source =localhost; Initial Catalog = {list[8].Split(':')[1]}; User ID ={list[6].Split(':')[1]}; Password ={list[7].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+        }
+
+        public Ruleinfo GetRuleinfo(int id)
+        {
+            var data = new Ruleinfo();
+            try
+            {
+                var sql = $@"select  ID,OddsID,
+            OnlineBetID,
+            OpenContent,
+            JudgeCondition,
+            JudgeNumber,
+            BetContent,
+            NoWinBetNumber,
+            NoWinBetConent,
+            StopProfit,
+            StopLoss,
+            StopBetHours,
+            intervalBetHours,
+            IsTurnBet,
+            ProfitMultiple,
+            LossMultiple,
+            IsProfitBetNow,
+            IsLossBetNow,
+            BetGearStop,
+            CreationTime from ruleinfo where id={id}";
+
+                var ds = DAL.DbHelper.MySqlQueryBySqlstring(sql, _connString);
+
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    data = Tool.Helper.ToList<Ruleinfo>(ds.Tables[0]).FirstOrDefault(x => x.ID == id);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return data;
+        }
+
+        public DataTable GetRuleinfoList()
+        {
+            var data = new DataTable();
+            try
+            {
+                var sql = @"select  ID,OddsID,
+            OnlineBetID,
+            OpenContent,
+            JudgeCondition,
+            JudgeNumber,
+            BetContent,
+            NoWinBetNumber,
+            NoWinBetConent,
+            StopProfit,
+            StopLoss,
+            StopBetHours,
+            intervalBetHours,
+            IsTurnBet,
+            ProfitMultiple,
+            LossMultiple,
+            IsProfitBetNow,
+            IsLossBetNow,
+            BetGearStop,
+            CreationTime from ruleinfo";
+
+                var ds = DAL.DbHelper.MySqlQueryBySqlstring(sql, _connString);
+
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    //data = Tool.Helper.ToList<Ruleinfo>(ds.Tables[0]);
+                    data = ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return data;
+        }
+
         public bool AddRules(Ruleinfo model)
         {
+            var reuslt = false;
             if (model.ID > 0)
             {
-                Add(model);
+                reuslt = Update(model);
             }
             else
             {
-                Update(model);
+                reuslt = Add(model);
             }
-
+            return reuslt;
         }
 
-        public bool Add(Ruleinfo model)
+        private bool Add(Ruleinfo model)
         {
-            var sql = $@"insert into ruleinfo(
+            try
+            {
+                var sql = $@"insert into ruleinfo(
             OddsID,
             OnlineBetID,
             OpenContent,
@@ -45,31 +138,43 @@ namespace BLL
             CreationTime)
             values
             (
-            {model.OddsID}, --(int)赔率ID，对应json文件
-            {model.OnlineBetID}, --(int)线上投注信息ID
-            '{model.BetContent}', --(varchar)开奖内容
-            '{model.JudgeCondition}', --(varchar)判断投注条件
-            {model.JudgeNumber}, --(int)判断投注期数
-            '{model.BetContent}', --(varchar)投注内容，可多选，用 | 隔开
-            {model.NoWinBetNumber}, --(int)未中奖期数
-            '{model.BetContent}', --(varchar)未中奖后投注内容
-            {model.StopProfit}, --(int)止盈金额
-            {model.StopLoss}, --(int)止损金额
-            {model.StopBetHours}, --(int)停止投注的小时数
-            {model.intervalBetHours}, --(int)间隔投注的小时数
-            {model.IsTurnBet}, --(bit)是否转向投注直到未中奖后停止，配合未中奖投注内容一起使用
-            '{model.ProfitMultiple}', --(varchar)盈利倍投
-            '{model.LossMultiple}', --(varchar)亏损倍投
-            {model.IsProfitBetNow}, --(bit)盈利后立即下注
-            {model.IsLossBetNow}, --(bit)亏损后立即下注
-            {model.BetGearStop}, --(bit)下注完倍投档位后立即停止
-            now() --(timestamp)创建时间
+            {model.OddsID}, 
+            {model.OnlineBetID}, 
+            '{model.BetContent}', 
+            '{model.JudgeCondition}', 
+            {model.JudgeNumber}, 
+            '{model.BetContent}',
+            {model.NoWinBetNumber}, 
+            '{model.BetContent}', 
+            {model.StopProfit}, 
+            {model.StopLoss},
+            {model.StopBetHours}, 
+            {model.intervalBetHours}, 
+            {model.IsTurnBet}, 
+            '{model.ProfitMultiple}', 
+            '{model.LossMultiple}',
+            {model.IsProfitBetNow},
+            {model.IsLossBetNow},
+            {model.BetGearStop}, 
+            now()
                 )";
-            
+
+                var result = DAL.DbHelper.MysqlExecuteSql(sql, _connString);
+
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
             return false;
         }
 
-        public bool Update(Ruleinfo model)
+        private bool Update(Ruleinfo model)
         {
             return false;
         }
