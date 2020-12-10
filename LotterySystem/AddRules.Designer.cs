@@ -210,6 +210,7 @@ namespace LotterySystem
             this.checkBox10.TabIndex = 48;
             this.checkBox10.Text = "通用倍投";
             this.checkBox10.UseVisualStyleBackColor = true;
+            this.checkBox10.Visible = false;
             // 
             // button6
             // 
