@@ -30,6 +30,7 @@ namespace LotterySystem
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.list = new System.Windows.Forms.ListBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.checkedListBox3 = new System.Windows.Forms.CheckedListBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -67,7 +68,6 @@ namespace LotterySystem
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.list = new System.Windows.Forms.ListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,6 +117,17 @@ namespace LotterySystem
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "自动投注规则";
+            // 
+            // list
+            // 
+            this.list.FormattingEnabled = true;
+            this.list.HorizontalScrollbar = true;
+            this.list.ItemHeight = 12;
+            this.list.Location = new System.Drawing.Point(7, 181);
+            this.list.Name = "list";
+            this.list.Size = new System.Drawing.Size(660, 244);
+            this.list.TabIndex = 56;
+            this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
             // 
             // textBox10
             // 
@@ -522,16 +533,6 @@ namespace LotterySystem
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(77, 20);
             this.comboBox2.TabIndex = 3;
-            // 
-            // list
-            // 
-            this.list.FormattingEnabled = true;
-            this.list.ItemHeight = 12;
-            this.list.Location = new System.Drawing.Point(7, 181);
-            this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size(660, 244);
-            this.list.TabIndex = 56;
-            this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
             // 
             // AddRules
             // 

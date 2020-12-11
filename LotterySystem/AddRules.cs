@@ -50,11 +50,29 @@ namespace LotterySystem
                 IsProfitBetNow = checkBox6.CheckState == CheckState.Checked ? 1 : 0,
                 BetGearStop = checkBox1.CheckState == CheckState.Checked ? 1 : 0,
             });
+
+            GetRuleinfo();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            var r = MessageBox.Show("是否确认输出此规则", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
+            if (r == DialogResult.OK)
+            {
+                var id = GetID();
+                var result = new BLL.RulesBusiness().DelRuleInfo(id);
+
+                if (result)
+                {
+                    MessageBox.Show("删除成功");
+                    GetRuleinfo();
+                }
+                else
+                {
+                    MessageBox.Show("删除失败");
+                }
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -96,7 +114,33 @@ namespace LotterySystem
 
         private void AddRules_Load(object sender, EventArgs e)
         {
-            var dt = GetRuleinfo();
+            //this.Controls.index(this.list, 1);
+            this.list.SendToBack();
+            GetRuleinfo();
+            
+        }
+
+        private void DisplayHScroll()
+        {
+            list.IntegralHeight = true;
+            var g = list.CreateGraphics();
+
+            var maxLength = 0;
+            for (int i = 0; i < list.Items.Count; i++)
+            {
+                var row = list.Items[i];
+                int hzSize = (int)g.MeasureString(row.ToString(), list.Font).Width;
+                if (hzSize > maxLength)
+                {
+                    maxLength = hzSize;
+                }
+            }
+            list.HorizontalExtent = maxLength;
+        }
+
+        public void GetRuleinfo()
+        {
+            var dt = new BLL.RulesBusiness().GetRuleinfoList();
 
             var list = new List<string>();
 
@@ -106,18 +150,16 @@ namespace LotterySystem
                 var row = dt.Rows[i];
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
-                    var col = row[dt.Columns[j].ColumnName];
+                    var colNmae = dt.Columns[j].ColumnName;
+                    var col = colNmae == "OddsID" ? row[colNmae] == "1" ? "赔率1" : "赔率2" : row[colNmae];
                     str += col + ",";
                 }
                 str = str.Substring(0, str.Length - 1);
                 list.Add(str);
             }
             this.list.DataSource = list;
-        }
 
-        public DataTable GetRuleinfo()
-        {
-            return new BLL.RulesBusiness().GetRuleinfoList();
+            DisplayHScroll();
         }
 
         private void checkedListBox1_LostFocus(object sender, EventArgs e)
@@ -216,9 +258,8 @@ namespace LotterySystem
 
         private void list_DoubleClick(object sender, EventArgs e)
         {
-            var str = ((ListBox)sender).SelectedItem.ToString();
-            var id = str.Split(',')[0];
-            var data = GetRuleinfo(Convert.ToInt32(id));
+            var id = GetID();
+            var data = GetRuleinfo(id);
 
             textBox3.Text = data.OpenContent;
             textBox9.Text = data.BetContent;
@@ -241,6 +282,13 @@ namespace LotterySystem
         public BLL.Ruleinfo GetRuleinfo(int id)
         {
             return new BLL.RulesBusiness().GetRuleinfo(id);
+        }
+
+        public int GetID()
+        {
+            var str = this.list.SelectedItem.ToString();
+            var id = Convert.ToInt32(str.Split(',')[0]);
+            return id;
         }
     }
 }

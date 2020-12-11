@@ -81,7 +81,7 @@ namespace BLL
             IsProfitBetNow,
             IsLossBetNow,
             BetGearStop,
-            CreationTime from ruleinfo";
+            CreationTime from ruleinfo order by id desc";
 
                 var ds = DAL.DbHelper.MySqlQueryBySqlstring(sql, _connString);
 
@@ -100,7 +100,7 @@ namespace BLL
 
         public bool AddRules(Ruleinfo model)
         {
-            var reuslt = false;
+            bool reuslt;
             if (model.ID > 0)
             {
                 reuslt = Update(model);
@@ -168,7 +168,6 @@ namespace BLL
             }
             catch (Exception ex)
             {
-                return false;
             }
 
             return false;
@@ -176,6 +175,25 @@ namespace BLL
 
         private bool Update(Ruleinfo model)
         {
+            return false;
+        }
+
+        public bool DelRuleInfo(int id)
+        {
+            try
+            {
+                var sql = $"delete from ruleinfo where id = {id}";
+                var result = DAL.DbHelper.MysqlExecuteSql(sql, _connString);
+
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
             return false;
         }
     }
