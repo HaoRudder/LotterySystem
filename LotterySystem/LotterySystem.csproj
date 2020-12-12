@@ -77,6 +77,12 @@
     <Compile Include="AddRules.Designer.cs">
       <DependentUpon>AddRules.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewAnalogData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewAnalogData.Designer.cs">
+      <DependentUpon>NewAnalogData.cs</DependentUpon>
+    </Compile>
     <Compile Include="OddsSetting.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddRules.resx">
       <DependentUpon>AddRules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewAnalogData.resx">
+      <DependentUpon>NewAnalogData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OddsSetting.resx">
       <DependentUpon>OddsSetting.cs</DependentUpon>

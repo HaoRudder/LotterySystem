@@ -29,6 +29,7 @@ namespace LotterySystem
         public static SystemConfiguration from4;
         public static AnalogData from5;
         public static ManualSimulation from6;
+        public static NewAnalogData from8;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -674,6 +675,20 @@ namespace LotterySystem
             else
             {
                 from6.Activate();
+            }
+        }
+
+        private void 新版模拟数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (from8 == null)
+            {
+                from8 = new NewAnalogData();
+                //from6.Assignment(table);
+                from8.Show();
+            }
+            else
+            {
+                from8.Activate();
             }
         }
     }

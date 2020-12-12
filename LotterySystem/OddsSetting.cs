@@ -23,6 +23,7 @@ namespace LotterySystem
         {
             AnalogData.from6 = null;
             ManualSimulation.from6 = null;
+            NewAnalogData.from6 = null;
         }
 
         /// <summary>

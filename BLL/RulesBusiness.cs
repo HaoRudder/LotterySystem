@@ -63,25 +63,27 @@ namespace BLL
             var data = new DataTable();
             try
             {
-                var sql = @"select  ID,OddsID,
-            OnlineBetID,
-            OpenContent,
-            JudgeCondition,
-            JudgeNumber,
-            BetContent,
-            NoWinBetNumber,
-            NoWinBetConent,
-            StopProfit,
-            StopLoss,
-            StopBetHours,
-            intervalBetHours,
-            IsTurnBet,
-            ProfitMultiple,
-            LossMultiple,
-            IsProfitBetNow,
-            IsLossBetNow,
-            BetGearStop,
-            CreationTime from ruleinfo order by id desc";
+                var sql = @"select  
+                ID '规则编号',
+			    IF(OddsID = 1,'规则1','规则2') as '赔率类型',
+                OpenContent '开奖内容',
+                JudgeCondition '判断投注条件',
+                JudgeNumber '判断期数',
+                BetContent '投注内容',
+                NoWinBetNumber '不中期数',
+                NoWinBetConent '不中后投注内容',
+                StopProfit '止盈',
+                StopLoss '只亏',
+                intervalBetHours '间隔投注小时数',
+                IF(IsTurnBet=0,'是','否') '是否转向投注',
+                ProfitMultiple '盈利倍投',
+                LossMultiple '亏损倍投',
+                IF(IsProfitBetNow =0,'是','否') '盈利后立即下注',
+                IF(IsLossBetNow =0,'是','否') '亏损后立即下注',
+                IF(BetGearStop =0,'是','否') '倍投完后停止',
+			    IF(CrackAfterBet  =0,'是','否') '断开后投注',
+                CreationTime '创建时间'      
+                from ruleinfo order by id desc";
 
                 var ds = DAL.DbHelper.MySqlQueryBySqlstring(sql, _connString);
 
@@ -135,17 +137,18 @@ namespace BLL
             IsProfitBetNow,
             IsLossBetNow,
             BetGearStop,
+            CrackAfterBet,
             CreationTime)
             values
             (
             {model.OddsID}, 
             {model.OnlineBetID}, 
-            '{model.BetContent}', 
+            '{model.OpenContent}', 
             '{model.JudgeCondition}', 
             {model.JudgeNumber}, 
             '{model.BetContent}',
             {model.NoWinBetNumber}, 
-            '{model.BetContent}', 
+            '{model.NoWinBetConent}', 
             {model.StopProfit}, 
             {model.StopLoss},
             {model.StopBetHours}, 
@@ -156,6 +159,7 @@ namespace BLL
             {model.IsProfitBetNow},
             {model.IsLossBetNow},
             {model.BetGearStop}, 
+            {model.CrackAfterBet},
             now()
                 )";
 
@@ -175,7 +179,41 @@ namespace BLL
 
         private bool Update(Ruleinfo model)
         {
-            return false;
+            try
+            {
+                var sql = $@"UPDATE ruleinfo SET
+            OddsID = {model.OddsID},
+            OnlineBetID = {model.OnlineBetID}, 
+            OpenContent= '{model.OpenContent}',
+            JudgeCondition = '{model.JudgeCondition}',
+            JudgeNumber = {model.JudgeNumber},
+            BetContent = '{model.BetContent}',
+            NoWinBetNumber = {model.NoWinBetNumber},
+            NoWinBetConent = '{model.NoWinBetConent}',
+            StopProfit = {model.StopProfit},
+            StopLoss = {model.StopLoss},
+            StopBetHours = {model.StopBetHours},
+            intervalBetHours = {model.intervalBetHours},
+            IsTurnBet = {model.IsTurnBet},
+            ProfitMultiple = '{model.ProfitMultiple}',
+            LossMultiple = '{model.LossMultiple}',
+            IsProfitBetNow = {model.IsProfitBetNow},
+            IsLossBetNow = {model.IsLossBetNow},
+            BetGearStop = {model.BetGearStop},
+            CrackAfterBet = {model.CrackAfterBet},
+            WHERE ID = {model.ID}";
+
+                var result = DAL.DbHelper.MysqlExecuteSql(sql, _connString);
+
+                if (result > 0)
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return true;
         }
 
         public bool DelRuleInfo(int id)
@@ -299,6 +337,10 @@ namespace BLL
         /// </summary>
         public int BetGearStop { get; set; }
 
+        /// <summary>
+        /// 断开后投注
+        /// </summary>
+        public int CrackAfterBet { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

@@ -49,6 +49,7 @@
     <Compile Include="OddsBusiness.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RulesBusiness.cs" />
+    <Compile Include="SimulationBusiness.cs" />
     <Compile Include="TrueBet.cs" />
   </ItemGroup>
   <ItemGroup>

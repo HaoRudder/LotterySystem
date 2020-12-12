@@ -31,8 +31,20 @@ namespace LotterySystem
 
         private void button1_Click(object sender, EventArgs e)
         {
+            var id = GetID();
+            if (id == -1)
+            {
+                MessageBox.Show("请选中需要操作的规则");
+                return;
+            }
+            AddOrUpdate(id);
+        }
+
+        public void AddOrUpdate(int id = 0)
+        {
             var result = new BLL.RulesBusiness().AddRules(new BLL.Ruleinfo
             {
+                ID = id,
                 OpenContent = textBox3.Text,
                 BetContent = textBox9.Text,
                 JudgeCondition = comboBox2.Text,
@@ -48,19 +60,33 @@ namespace LotterySystem
                 LossMultiple = textBox5.Text,
                 IsLossBetNow = checkBox3.CheckState == CheckState.Checked ? 1 : 0,
                 IsProfitBetNow = checkBox6.CheckState == CheckState.Checked ? 1 : 0,
-                BetGearStop = checkBox1.CheckState == CheckState.Checked ? 1 : 0,
+                BetGearStop = checkBox7.CheckState == CheckState.Checked ? 1 : 0,
+                CrackAfterBet = checkBox1.CheckState == CheckState.Checked ? 1 : 0,
             });
 
+            if (result)
+            {
+                MessageBox.Show("操作成功");
+            }
+            else
+            {
+                MessageBox.Show("操作失败");
+            }
             GetRuleinfo();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var r = MessageBox.Show("是否确认输出此规则", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var id = GetID();
+            if (id == -1)
+            {
+                MessageBox.Show("请选中需要操作的规则");
+                return;
+            }
 
+            var r = MessageBox.Show("是否确认输出此规则", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (r == DialogResult.OK)
             {
-                var id = GetID();
                 var result = new BLL.RulesBusiness().DelRuleInfo(id);
 
                 if (result)
@@ -107,7 +133,7 @@ namespace LotterySystem
             var str = string.Empty;
             foreach (var item in checkedListBox1.CheckedItems)
             {
-                str += item + ",";
+                str += item + "|";
             }
             textBox3.Text = !string.IsNullOrWhiteSpace(str) ? str.Substring(0, str.Length - 1) : "";
         }
@@ -116,8 +142,10 @@ namespace LotterySystem
         {
             //this.Controls.index(this.list, 1);
             this.list.SendToBack();
+            this.label2.SendToBack();
+            this.label5.SendToBack();
             GetRuleinfo();
-            
+
         }
 
         private void DisplayHScroll()
@@ -235,15 +263,14 @@ namespace LotterySystem
             var str = string.Empty;
             foreach (var item in checkedListBox2.CheckedItems)
             {
-                str += item + ",";
+                str += item + "|";
             }
             textBox9.Text = !string.IsNullOrWhiteSpace(str) ? str.Substring(0, str.Length - 1) : "";
         }
 
         private void AddRules_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AnalogData.from7 = null;
-            ManualSimulation.from7 = null;
+            NewAnalogData.from7 = null;
         }
 
         private void checkedListBox3_SelectedIndexChanged(object sender, EventArgs e)
@@ -251,7 +278,7 @@ namespace LotterySystem
             var str = string.Empty;
             foreach (var item in checkedListBox3.CheckedItems)
             {
-                str += item + ",";
+                str += item + "|";
             }
             textBox10.Text = !string.IsNullOrWhiteSpace(str) ? str.Substring(0, str.Length - 1) : "";
         }
@@ -261,12 +288,57 @@ namespace LotterySystem
             var id = GetID();
             var data = GetRuleinfo(id);
 
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            {
+                if (checkedListBox1.GetItemChecked(i))
+                {
+                    checkedListBox1.SetItemChecked(i, false);
+                }
+            }
+            for (int i = 0; i < data.OpenContent.Split('|').Length; i++)
+            {
+                var val = data.OpenContent.Split('|')[i];
+                var index = checkedListBox1.Items.IndexOf(val);
+                checkedListBox1.SetItemChecked(index, true);
+            }
             textBox3.Text = data.OpenContent;
+
+
+            for (int i = 0; i < checkedListBox2.Items.Count; i++)
+            {
+                if (checkedListBox2.GetItemChecked(i))
+                {
+                    checkedListBox2.SetItemChecked(i, false);
+                }
+            }
+            for (int i = 0; i < data.BetContent.Split('|').Length; i++)
+            {
+                var val = data.BetContent.Split('|')[i];
+                var index = checkedListBox2.Items.IndexOf(val);
+                checkedListBox2.SetItemChecked(index, true);
+            }
             textBox9.Text = data.BetContent;
+
             comboBox2.Text = data.JudgeCondition;
             textBox1.Text = data.JudgeNumber.ToString();
             textBox2.Text = data.NoWinBetNumber.ToString();
+
+
+            for (int i = 0; i < checkedListBox3.Items.Count; i++)
+            {
+                if (checkedListBox3.GetItemChecked(i))
+                {
+                    checkedListBox3.SetItemChecked(i, false);
+                }
+            }
+            for (int i = 0; i < data.NoWinBetConent.Split('|').Length; i++)
+            {
+                var val = data.NoWinBetConent.Split('|')[i];
+                var index = checkedListBox3.Items.IndexOf(val);
+                checkedListBox3.SetItemChecked(index, true);
+            }
             textBox10.Text = data.NoWinBetConent;
+
             textBox6.Text = data.StopProfit.ToString();
             textBox8.Text = data.StopLoss.ToString();
             textBox7.Text = data.intervalBetHours.ToString();
@@ -286,9 +358,51 @@ namespace LotterySystem
 
         public int GetID()
         {
-            var str = this.list.SelectedItem.ToString();
+            if (list.SelectedItem == null)
+            {
+                return -1;
+            }
+            var str = list.SelectedItem.ToString();
             var id = Convert.ToInt32(str.Split(',')[0]);
             return id;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBox3.Text))
+            {
+                MessageBox.Show("开奖内容不能为空");
+                textBox3.Focus();
+                textBox3_Click(textBox3, null);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(comboBox2.Text))
+            {
+                MessageBox.Show("投注条件不能为空");
+                comboBox2.Focus();
+                comboBox2.DroppedDown = true;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                MessageBox.Show("判断期数不能为空");
+                textBox1.Focus();
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(textBox9.Text))
+            {
+                MessageBox.Show("投注内容不能为空");
+                textBox3_Click(textBox9, null);
+                textBox9.Focus();
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(textBox4.Text) && string.IsNullOrWhiteSpace(textBox5.Text))
+            {
+                MessageBox.Show("盈利倍投或亏损倍投不能为空");
+                textBox4.Focus();
+                return;
+            }
+            AddOrUpdate();
         }
     }
 }

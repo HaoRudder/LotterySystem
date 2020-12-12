@@ -247,7 +247,7 @@ namespace Tool
                     case ConfigurationType.AutomaticExportEntities:
                         return $"Data Source = {list.Split('\n')[0].Split(':')[1]}; Initial Catalog = {list.Split('\n')[1].Split(':')[1]}; User ID = { list.Split('\n')[2].Split(':')[1]}; Password = { list.Split('\n')[3].Split(':')[1]};Character Set=utf8;";
                     case ConfigurationType.Localhost:
-                        return $"Data Source =localhost; Initial Catalog = game_spider; User ID = { list.Split('\n')[4].Split(':')[1]}; Password = { list.Split('\n')[5].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+                        return $"Data Source =localhost; Initial Catalog = game_spider; User ID = { list.Split('\n')[4].Split(':')[1]}; Password = { list.Split('\n')[5].Split(':')[1]};Character Set=utf8; port=33060 Allow User Variables=True";
                     case ConfigurationType.ProgramPath:
                         return list.Split('\n')[13].Substring(list.Split('\n')[13].LastIndexOf(':') - 1, list.Split('\n')[13].Length - list.Split('\n')[13].LastIndexOf(':') + 1);
                     case ConfigurationType.LotterySystemPath:
