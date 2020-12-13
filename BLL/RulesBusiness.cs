@@ -25,6 +25,7 @@ namespace BLL
             try
             {
                 var sql = $@"select  ID,OddsID,
+            RuleType,
             OnlineBetID,
             OpenContent,
             JudgeCondition,
@@ -120,6 +121,7 @@ namespace BLL
             {
                 var sql = $@"insert into ruleinfo(
             OddsID,
+            RuleType,
             OnlineBetID,
             OpenContent,
             JudgeCondition,
@@ -142,6 +144,7 @@ namespace BLL
             values
             (
             {model.OddsID}, 
+            {model.RuleType},
             {model.OnlineBetID}, 
             '{model.OpenContent}', 
             '{model.JudgeCondition}', 
@@ -246,6 +249,8 @@ namespace BLL
         ///ID
         /// </summary>
         public int ID { get; set; }
+
+        public int RuleType { get; set; }
 
         /// <summary>
         /// 赔率ID，对应json文件

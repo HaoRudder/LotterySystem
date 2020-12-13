@@ -44,22 +44,93 @@ namespace BLL
             }
             return list;
         }
-        public class DataInfo
+
+        public List<AnalogData> GetAnalogDataList(List<int> ruleIdList, string table, DateTime minTime, DateTime maxTime)
         {
-            public int id { get; set; }
-            public string qishu { get; set; }
-            public DateTime create_time { get; set; }
-            public string one { get; set; }
-            public string two { get; set; }
-            public string three { get; set; }
-            public string sum { get; set; }
-            public string daxiao { get; set; }
-            public string danshuang { get; set; }
-            public string teshu { get; set; }
-            public string zuhe { get; set; }
-            public string jizhi { get; set; }
-            public DateTime count_down { get; set; }
-            public DateTime count_down2 { get; set; }
+            var list = new List<AnalogData>();
+            try
+            {
+                var dataList = GetDataList(table, minTime, maxTime);
+
+                foreach (var item in ruleIdList)
+                {
+                    var ruleinfo = new RulesBusiness().GetRuleinfo(item);
+                    switch (ruleinfo.RuleType)
+                    {
+                        case 1://断开后投注
+                            var analogDatalsit = DuanKaiHouTouZhu(ruleinfo, dataList);
+                            break;
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+
+            }
+            return list;
         }
+
+        /// <summary>
+        /// 断开后投注算法
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        public List<AnalogData> DuanKaiHouTouZhu(Ruleinfo rule, List<DataInfo> dataList)
+        {
+            var list = new List<AnalogData>();
+            try
+            {
+                foreach (var item in dataList)
+                {
+                    var model = new AnalogData
+                    {
+                        id = item.id.ToString(),
+                        kaijiangshijian = item.create_time.ToString(),
+                        qihao = item.qishu,
+                        kaijiangshuzi = item.one + item.two + item.three,
+                        shuxing = item.zuhe + item.teshu + item.jizhi,
+                        dangqianjine = "0",
+                    };
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return list;
+        }
+    }
+    public class AnalogData
+    {
+        public string id { get; set; }
+        public string kaijiangshijian { get; set; }
+        public string qihao { get; set; }
+        public string kaijiangshuzi { get; set; }
+        public string shuxing { get; set; }
+        public string xiazhuneirong { get; set; }
+        public string yingkuijine { get; set; }
+        public string dangqianjine { get; set; }
+        public string biaozhu { get; set; }
+    }
+
+    public class DataInfo
+    {
+        public int id { get; set; }
+        public string qishu { get; set; }
+        public DateTime create_time { get; set; }
+        public string one { get; set; }
+        public string two { get; set; }
+        public string three { get; set; }
+        public string sum { get; set; }
+        public string daxiao { get; set; }
+        public string danshuang { get; set; }
+        public string teshu { get; set; }
+        public string zuhe { get; set; }
+        public string jizhi { get; set; }
+        public DateTime count_down { get; set; }
+        public DateTime count_down2 { get; set; }
     }
 }

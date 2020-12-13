@@ -54,6 +54,15 @@
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.赔率设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.添加规则ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kaijiangshijian = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.qishu = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shuzi = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.shuxing = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xiazhuneirong = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.yingkuijine = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.当前金额 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.biaozhu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.list)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -150,7 +159,7 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(695, 28);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(843, 646);
+            this.groupBox2.Size = new System.Drawing.Size(929, 646);
             this.groupBox2.TabIndex = 43;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "模拟运算投注";
@@ -229,6 +238,16 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ID,
+            this.kaijiangshijian,
+            this.qishu,
+            this.shuzi,
+            this.shuxing,
+            this.xiazhuneirong,
+            this.yingkuijine,
+            this.当前金额,
+            this.biaozhu});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -244,7 +263,7 @@
             this.dataGridView1.RowHeadersWidth = 20;
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(829, 562);
+            this.dataGridView1.Size = new System.Drawing.Size(916, 562);
             this.dataGridView1.TabIndex = 17;
             // 
             // end
@@ -300,7 +319,7 @@
             this.添加规则ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(1550, 25);
+            this.menuStrip2.Size = new System.Drawing.Size(1636, 25);
             this.menuStrip2.TabIndex = 44;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -318,11 +337,65 @@
             this.添加规则ToolStripMenuItem.Text = "添加规则";
             this.添加规则ToolStripMenuItem.Click += new System.EventHandler(this.添加规则ToolStripMenuItem_Click);
             // 
+            // ID
+            // 
+            this.ID.HeaderText = "方案ID";
+            this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
+            // 
+            // kaijiangshijian
+            // 
+            this.kaijiangshijian.HeaderText = "开奖时间";
+            this.kaijiangshijian.Name = "kaijiangshijian";
+            this.kaijiangshijian.ReadOnly = true;
+            // 
+            // qishu
+            // 
+            this.qishu.HeaderText = "期号";
+            this.qishu.Name = "qishu";
+            this.qishu.ReadOnly = true;
+            // 
+            // shuzi
+            // 
+            this.shuzi.HeaderText = "开奖数字";
+            this.shuzi.Name = "shuzi";
+            this.shuzi.ReadOnly = true;
+            // 
+            // shuxing
+            // 
+            this.shuxing.HeaderText = "属性";
+            this.shuxing.Name = "shuxing";
+            this.shuxing.ReadOnly = true;
+            // 
+            // xiazhuneirong
+            // 
+            this.xiazhuneirong.HeaderText = "下注内容";
+            this.xiazhuneirong.Name = "xiazhuneirong";
+            this.xiazhuneirong.ReadOnly = true;
+            // 
+            // yingkuijine
+            // 
+            this.yingkuijine.HeaderText = "盈亏金额";
+            this.yingkuijine.Name = "yingkuijine";
+            this.yingkuijine.ReadOnly = true;
+            // 
+            // 当前金额
+            // 
+            this.当前金额.HeaderText = "当前金额";
+            this.当前金额.Name = "当前金额";
+            this.当前金额.ReadOnly = true;
+            // 
+            // biaozhu
+            // 
+            this.biaozhu.HeaderText = "标注";
+            this.biaozhu.Name = "biaozhu";
+            this.biaozhu.ReadOnly = true;
+            // 
             // NewAnalogData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1550, 686);
+            this.ClientSize = new System.Drawing.Size(1636, 686);
             this.Controls.Add(this.menuStrip2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.textBox9);
@@ -367,5 +440,14 @@
         private System.Windows.Forms.ToolStripMenuItem 添加规则ToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 刷新ToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn kaijiangshijian;
+        private System.Windows.Forms.DataGridViewTextBoxColumn qishu;
+        private System.Windows.Forms.DataGridViewTextBoxColumn shuzi;
+        private System.Windows.Forms.DataGridViewTextBoxColumn shuxing;
+        private System.Windows.Forms.DataGridViewTextBoxColumn xiazhuneirong;
+        private System.Windows.Forms.DataGridViewTextBoxColumn yingkuijine;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 当前金额;
+        private System.Windows.Forms.DataGridViewTextBoxColumn biaozhu;
     }
 }

@@ -135,7 +135,7 @@ namespace LotterySystem
         {
             var begin = Convert.ToDateTime(this.begin.Text);
             var end = Convert.ToDateTime(this.end.Text);
-            var list = new BLL.SimulationBusiness().GetDataList("canada28", begin, end);
+            var list = new BLL.SimulationBusiness().GetAnalogDataList(new List<int> { 1 }, "canada28", begin, end);
 
             dataGridView1.DataSource = list;
         }

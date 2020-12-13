@@ -42,11 +42,6 @@ namespace LotterySystem
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.checkBox10 = new System.Windows.Forms.CheckBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.comboBox9 = new System.Windows.Forms.ComboBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.comboBox8 = new System.Windows.Forms.ComboBox();
-            this.comboBox7 = new System.Windows.Forms.ComboBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
@@ -69,11 +64,15 @@ namespace LotterySystem
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.button2);
@@ -86,11 +85,6 @@ namespace LotterySystem
             this.groupBox1.Controls.Add(this.textBox3);
             this.groupBox1.Controls.Add(this.checkedListBox1);
             this.groupBox1.Controls.Add(this.checkBox10);
-            this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Controls.Add(this.comboBox9);
-            this.groupBox1.Controls.Add(this.button5);
-            this.groupBox1.Controls.Add(this.comboBox8);
-            this.groupBox1.Controls.Add(this.comboBox7);
             this.groupBox1.Controls.Add(this.textBox8);
             this.groupBox1.Controls.Add(this.checkBox9);
             this.groupBox1.Controls.Add(this.checkBox8);
@@ -234,7 +228,7 @@ namespace LotterySystem
             "豹子",
             "特码13",
             "特码14"});
-            this.checkedListBox2.Location = new System.Drawing.Point(307, 38);
+            this.checkedListBox2.Location = new System.Drawing.Point(307, 39);
             this.checkedListBox2.Name = "checkedListBox2";
             this.checkedListBox2.Size = new System.Drawing.Size(100, 244);
             this.checkedListBox2.TabIndex = 51;
@@ -287,57 +281,6 @@ namespace LotterySystem
             this.checkBox10.Text = "通用倍投";
             this.checkBox10.UseVisualStyleBackColor = true;
             this.checkBox10.Visible = false;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(326, 155);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(93, 23);
-            this.button6.TabIndex = 47;
-            this.button6.Text = "删除选中网站";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // comboBox9
-            // 
-            this.comboBox9.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox9.FormattingEnabled = true;
-            this.comboBox9.Location = new System.Drawing.Point(421, 157);
-            this.comboBox9.Name = "comboBox9";
-            this.comboBox9.Size = new System.Drawing.Size(101, 20);
-            this.comboBox9.TabIndex = 46;
-            this.comboBox9.Visible = false;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(226, 154);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(99, 23);
-            this.button5.TabIndex = 45;
-            this.button5.Text = "添加至选中规则";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // comboBox8
-            // 
-            this.comboBox8.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox8.FormattingEnabled = true;
-            this.comboBox8.Location = new System.Drawing.Point(97, 155);
-            this.comboBox8.Name = "comboBox8";
-            this.comboBox8.Size = new System.Drawing.Size(106, 20);
-            this.comboBox8.TabIndex = 44;
-            // 
-            // comboBox7
-            // 
-            this.comboBox7.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox7.FormattingEnabled = true;
-            this.comboBox7.Items.AddRange(new object[] {
-            "请选择网站",
-            "南宫"});
-            this.comboBox7.Location = new System.Drawing.Point(7, 155);
-            this.comboBox7.Name = "comboBox7";
-            this.comboBox7.Size = new System.Drawing.Size(84, 20);
-            this.comboBox7.TabIndex = 43;
             // 
             // textBox8
             // 
@@ -544,6 +487,26 @@ namespace LotterySystem
             this.comboBox2.Size = new System.Drawing.Size(77, 20);
             this.comboBox2.TabIndex = 3;
             // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "1.断开后投注"});
+            this.comboBox1.Location = new System.Drawing.Point(413, 157);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(105, 20);
+            this.comboBox1.TabIndex = 60;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(354, 161);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 61;
+            this.label6.Text = "规则类型";
+            // 
             // AddRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -565,11 +528,6 @@ namespace LotterySystem
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBox10;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.ComboBox comboBox9;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.ComboBox comboBox8;
-        private System.Windows.Forms.ComboBox comboBox7;
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.CheckBox checkBox9;
         private System.Windows.Forms.CheckBox checkBox8;
@@ -603,5 +561,7 @@ namespace LotterySystem
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
