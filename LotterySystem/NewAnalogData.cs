@@ -135,9 +135,38 @@ namespace LotterySystem
         {
             var begin = Convert.ToDateTime(this.begin.Text);
             var end = Convert.ToDateTime(this.end.Text);
-            var list = new BLL.SimulationBusiness().GetAnalogDataList(new List<int> { 1 }, "canada28", begin, end);
+            var idList = new List<int>();
 
+            for (int i = 0; i < this.list.Rows.Count; i++)
+            {
+                var cb = (DataGridViewCheckBoxCell)this.list.Rows[i].Cells[0];
+
+                bool flag = Convert.ToBoolean(cb.Value);
+                if (flag == true)
+                {
+                    var val = this.list.Rows[i].Cells[1].Value;
+                    idList.Add(Convert.ToInt32(val));
+                }
+            }
+
+            var list = new BLL.SimulationBusiness().GetAnalogDataList(idList, "canada28", begin, end);
             dataGridView1.DataSource = list;
+            dataGridView1.Columns[0].HeaderCell.Value = "方案";
+            dataGridView1.Columns[1].HeaderCell.Value = "开奖时间";
+            dataGridView1.Columns[1].Width = 120;
+            dataGridView1.Columns[2].HeaderCell.Value = "期号";
+            dataGridView1.Columns[2].Width = 70;
+            dataGridView1.Columns[3].HeaderCell.Value = "开奖数字";
+            dataGridView1.Columns[3].Width = 70;
+            dataGridView1.Columns[4].HeaderCell.Value = "属性";
+            dataGridView1.Columns[5].HeaderCell.Value = "下注内容";
+            dataGridView1.Columns[5].Width = 180;
+            dataGridView1.Columns[6].HeaderCell.Value = "盈亏金额";
+            dataGridView1.Columns[6].Width = 100;
+            dataGridView1.Columns[7].HeaderCell.Value = "当前金额";
+            dataGridView1.Columns[7].Width = 100;
+            dataGridView1.Columns[8].HeaderCell.Value = "标注";
+            dataGridView1.Columns[8].Width = 50;
         }
     }
 }

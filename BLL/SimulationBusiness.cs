@@ -58,11 +58,10 @@ namespace BLL
                     switch (ruleinfo.RuleType)
                     {
                         case 1://断开后投注
-                            var analogDatalsit = DuanKaiHouTouZhu(ruleinfo, dataList);
+                            list.AddRange(DuanKaiHouTouZhu(ruleinfo, dataList));
                             break;
                     }
                 }
-
             }
             catch (Exception)
             {
@@ -82,23 +81,177 @@ namespace BLL
             var list = new List<AnalogData>();
             try
             {
+                //投注条件算法
+
+                //开始投注
+                list = BetAlgorithm(rule, dataList);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 投注算法（通用）
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        public List<AnalogData> BetAlgorithm(Ruleinfo rule, List<DataInfo> dataList)
+        {
+            var list = new List<AnalogData>();
+            try
+            {
                 foreach (var item in dataList)
                 {
+                    //倍投金额
+                    var lossMultiple = rule.LossMultiple.Split('|');
+                    var profitMultiple = rule.ProfitMultiple.Split('|');
+                    var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
+                    var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+                    var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
+
+                    if (data.biaozhu == "中奖")
+                    {
+                        if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
+                        {
+                            rule.ProfitMultipleLevel = 0;
+                        }
+                        rule.ProfitMultipleLevel++;
+                        rule.LossMultipleLevel = 0;
+
+                    }
+                    else
+                    {
+                        if (rule.LossMultipleLevel >= lossMultiple.Length - 1)
+                        {
+                            rule.LossMultipleLevel = 0;
+                        }
+                        else
+                        {
+                            rule.LossMultipleLevel++;
+                        }
+                        rule.ProfitMultipleLevel = 0;
+                    }
+
                     var model = new AnalogData
                     {
                         id = item.id.ToString(),
                         kaijiangshijian = item.create_time.ToString(),
                         qihao = item.qishu,
-                        kaijiangshuzi = item.one + item.two + item.three,
-                        shuxing = item.zuhe + item.teshu + item.jizhi,
-                        dangqianjine = "0",
+                        kaijiangshuzi = item.one + "+" + item.two + "+" + item.three + "=" + (Convert.ToInt32(item.one) + Convert.ToInt32(item.two) + Convert.ToInt32(item.three)),
+                        shuxing = item.zuhe + "|" + item.teshu + "|" + item.jizhi,
+                        biaozhu = data.biaozhu,
+                        xiazhuneirong = data.xiazhuneirong,
+                        yingkuijine = data.yingkuijine
                     };
+                    list.Add(model);
+                }
+
+                //这里单独计算当前金额
+                list = CalculateCurrentAmount(list);
+                return list;
+            }
+            catch (Exception ex)
+            {
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 是否中奖并计算赔率
+        /// </summary>
+        /// <returns></returns>
+        public AnalogData WinOrNot(DataInfo dataInfo, string betContent, decimal profitMultipleMoney, decimal lossMultipleMoney, int oddsID)
+        {
+            var data = new AnalogData();
+
+            //判断是否中奖
+            foreach (var item in betContent.Split('|'))
+            {
+                var openContent = GetWinContent(dataInfo, item);
+
+                if (!string.IsNullOrWhiteSpace(openContent))
+                {
+                    //计算赔率
+                    var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
+                    var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
+                    var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
+                    var money = profitMultipleMoney * Convert.ToDecimal(val);
+
+                    data.xiazhuneirong = data.xiazhuneirong + item + "," + profitMultipleMoney + "|";
+
+                    data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + money).ToString();
+                    data.biaozhu = "中奖";
+                }
+                else
+                {
+                    data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-lossMultipleMoney)).ToString();
+                    data.xiazhuneirong = data.xiazhuneirong + item + "," + lossMultipleMoney + "|";
                 }
             }
-            catch (Exception)
-            {
+            data.xiazhuneirong = data.xiazhuneirong.Substring(0, data.xiazhuneirong.Length - 1);
+            return data;
+        }
 
-                throw;
+        /// <summary>
+        /// 获取中奖内容
+        /// </summary>
+        /// <param name="dataInfo"></param>
+        /// <param name="betContent"></param>
+        /// <returns></returns>
+        public string GetWinContent(DataInfo dataInfo, string betContent)
+        {
+            var openContent = string.Empty;
+
+            if (betContent.Contains("特码") && dataInfo.sum == betContent)
+            {
+                openContent = betContent;
+            }
+            if (dataInfo.daxiao == betContent)
+            {
+                openContent = betContent;
+            }
+            if (dataInfo.danshuang == betContent)
+            {
+                openContent = betContent;
+            }
+            if (dataInfo.teshu == betContent)
+            {
+                openContent = betContent;
+            }
+            if (dataInfo.zuhe == betContent)
+            {
+                openContent = betContent;
+            }
+            if (dataInfo.jizhi == betContent)
+            {
+                openContent = betContent;
+            }
+            return openContent;
+        }
+
+        /// <summary>
+        /// 计算当前金额
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public List<AnalogData> CalculateCurrentAmount(List<AnalogData> list)
+        {
+            decimal money = 0;
+            //这里单独计算当前金额
+            for (int i = 0; i < list.Count; i++)
+            {
+                var row = list[i];
+
+                if (!string.IsNullOrWhiteSpace(row.yingkuijine))
+                {
+                    row.dangqianjine = (money + Convert.ToDecimal(row.yingkuijine)).ToString();
+                    money = Convert.ToDecimal(row.dangqianjine);
+                }
             }
             return list;
         }

@@ -66,6 +66,9 @@ namespace BLL
             {
                 var sql = @"select  
                 ID '规则编号',
+	(CASE 
+	WHEN RuleType = 1 THEN '断开后投注'
+	END ) '规则类型',
 			    IF(OddsID = 1,'规则1','规则2') as '赔率类型',
                 OpenContent '开奖内容',
                 JudgeCondition '判断投注条件',
@@ -351,5 +354,14 @@ namespace BLL
         /// </summary>
         public DateTime CreationTime { get; set; }
 
+        /// <summary>
+        /// 盈利倍投档位（扩展类型）
+        /// </summary>
+        public int ProfitMultipleLevel { get; set; }
+
+        /// <summary>
+        /// 亏损倍投档位（扩展字段）
+        /// </summary>
+        public int LossMultipleLevel { get; set; }
     }
 }
