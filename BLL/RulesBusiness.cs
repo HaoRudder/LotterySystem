@@ -206,7 +206,7 @@ namespace BLL
             IsProfitBetNow = {model.IsProfitBetNow},
             IsLossBetNow = {model.IsLossBetNow},
             BetGearStop = {model.BetGearStop},
-            CrackAfterBet = {model.CrackAfterBet},
+            CrackAfterBet = {model.CrackAfterBet}
             WHERE ID = {model.ID}";
 
                 var result = DAL.DbHelper.MysqlExecuteSql(sql, _connString);
@@ -216,7 +216,7 @@ namespace BLL
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
             }
             return true;

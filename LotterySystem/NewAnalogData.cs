@@ -120,6 +120,10 @@ namespace LotterySystem
 
         private void list_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (e.RowIndex == -1)
+            {
+                return;
+            }
             //checkbox 勾上
             if ((bool)list.Rows[e.RowIndex].Cells[0].EditedFormattedValue == true)
             {
@@ -149,9 +153,16 @@ namespace LotterySystem
                 }
             }
 
+            if (idList.Count == 0)
+            {
+                MessageBox.Show("请至少选择一条规则");
+                return;
+            }
+
             var list = new BLL.SimulationBusiness().GetAnalogDataList(idList, "canada28", begin, end);
             dataGridView1.DataSource = list;
             dataGridView1.Columns[0].HeaderCell.Value = "方案";
+            dataGridView1.Columns[0].Width = 80;
             dataGridView1.Columns[1].HeaderCell.Value = "开奖时间";
             dataGridView1.Columns[1].Width = 120;
             dataGridView1.Columns[2].HeaderCell.Value = "期号";
@@ -162,11 +173,11 @@ namespace LotterySystem
             dataGridView1.Columns[5].HeaderCell.Value = "下注内容";
             dataGridView1.Columns[5].Width = 180;
             dataGridView1.Columns[6].HeaderCell.Value = "盈亏金额";
-            dataGridView1.Columns[6].Width = 100;
+            dataGridView1.Columns[6].Width = 80;
             dataGridView1.Columns[7].HeaderCell.Value = "当前金额";
-            dataGridView1.Columns[7].Width = 100;
+            dataGridView1.Columns[7].Width = 80;
             dataGridView1.Columns[8].HeaderCell.Value = "标注";
-            dataGridView1.Columns[8].Width = 50;
+            dataGridView1.Columns[8].Width = 100;
         }
     }
 }

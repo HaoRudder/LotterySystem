@@ -17,6 +17,8 @@ namespace LotterySystem
     {
         public Form1()
         {
+            新版模拟数据ToolStripMenuItem_Click(null, null);
+            return;
             InitializeComponent();
         }
 
@@ -33,6 +35,8 @@ namespace LotterySystem
 
         private void Form1_Load(object sender, EventArgs e)
         {
+           
+            
             #region 初始化时间为当天
             wkBeginTime.Text = DateTime.Now.ToString("yyyy-MM-dd 00:00:00");
             wkEndTime.Text = DateTime.Now.ToString("yyyy-MM-dd 23:59:59");

@@ -336,6 +336,10 @@ namespace LotterySystem
             for (int i = 0; i < data.NoWinBetConent.Split('|').Length; i++)
             {
                 var val = data.NoWinBetConent.Split('|')[i];
+                if (string.IsNullOrWhiteSpace(val))
+                {
+                    continue;
+                }
                 var index = checkedListBox3.Items.IndexOf(val);
                 checkedListBox3.SetItemChecked(index, true);
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,9 +46,28 @@ namespace BLL
             return list;
         }
 
+
+        /// <summary>
+        /// 初始化模拟数据
+        /// </summary>
+        /// <param name="dataLis"></param>
+        /// <returns></returns>
+        public List<AnalogData> InitAnalogData(List<DataInfo> dataLis)
+        {
+            return dataLis.Select(item => new AnalogData
+            {
+                id = item.id.ToString(),
+                kaijiangshijian = item.create_time.ToString(CultureInfo.InvariantCulture),
+                qihao = item.qishu,
+                kaijiangshuzi = $"{item.one}+{item.two}+{item.three}={Convert.ToInt32(item.one) + Convert.ToInt32(item.two) + Convert.ToInt32(item.three)}",
+                shuxing = $"{item.zuhe}|{item.teshu}|{item.jizhi}",
+            }).ToList();
+        }
+
         public List<AnalogData> GetAnalogDataList(List<int> ruleIdList, string table, DateTime minTime, DateTime maxTime)
         {
-            var list = new List<AnalogData>();
+            //每个规则算法自己分开算，算完了之后在统一合并
+            var list = new List<List<AnalogData>>();
             try
             {
                 var dataList = GetDataList(table, minTime, maxTime);
@@ -58,7 +78,7 @@ namespace BLL
                     switch (ruleinfo.RuleType)
                     {
                         case 1://断开后投注
-                            list.AddRange(DuanKaiHouTouZhu(ruleinfo, dataList));
+                            list.Add(DuanKaiHouTouZhu(ruleinfo, dataList));
                             break;
                     }
                 }
@@ -67,8 +87,12 @@ namespace BLL
             {
 
             }
-            return list;
+            //var result = new List<AnalogData>();
+            //return result;
+            return list[0];
         }
+
+
 
         /// <summary>
         /// 断开后投注算法
@@ -78,87 +102,141 @@ namespace BLL
         /// <returns></returns>
         public List<AnalogData> DuanKaiHouTouZhu(Ruleinfo rule, List<DataInfo> dataList)
         {
-            var list = new List<AnalogData>();
+            var initList = InitAnalogData(dataList);
             try
             {
-                //投注条件算法
+                var number = 0;
 
-                //开始投注
-                list = BetAlgorithm(rule, dataList);
+                //投注条件算法
+                foreach (var item in dataList)
+                {
+                    if (number == rule.JudgeNumber)
+                    {
+                        number = 0;
+                        var model = BetAlgorithm(rule, item);
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
+                    }
+
+                    var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
+                    if (tempNumber == 0)
+                    {
+                        number = 0;
+                    }
+                    else
+                    {
+                        number += tempNumber;
+                    }
+                }
+
+                //这里单独计算当前金额
+                initList = CalculateCurrentAmount(initList);
             }
             catch (Exception ex)
             {
 
                 throw;
             }
-            return list;
+            return initList;
+        }
+
+
+        /// <summary>
+        /// 判断投注条件是否满足
+        /// </summary>
+        /// <param name="openContent"></param>
+        /// <param name="judgeCondition"></param>
+        /// <param name="judgeNumber"></param>
+        /// <returns></returns>
+        public int JudgeBetCondition(string openContent, string judgeCondition, DataInfo row)
+        {
+            try
+            {
+                var list = openContent.Split('|');
+                var number = 0;
+                foreach (var item in list)
+                {
+                    var openStr = GetWinContent(row, item);
+                    if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
+                    {
+                        number++;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
+                    {
+                        number++;
+                    }
+
+                    if (number == list.Length)
+                    {
+                        return 1;
+                    }
+                }
+                return 0;
+            }
+            catch (Exception e)
+            {
+            }
+            return -1;
         }
 
         /// <summary>
         /// 投注算法（通用）
         /// </summary>
         /// <param name="rule"></param>
-        /// <param name="dataList"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        public List<AnalogData> BetAlgorithm(Ruleinfo rule, List<DataInfo> dataList)
+        public AnalogData BetAlgorithm(Ruleinfo rule, DataInfo item)
         {
-            var list = new List<AnalogData>();
+            AnalogData model = null;
             try
             {
-                foreach (var item in dataList)
+                //倍投金额
+                var lossMultiple = rule.LossMultiple.Split('|');
+                var profitMultiple = rule.ProfitMultiple.Split('|');
+                var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
+                var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+                var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
+
+                if (data.biaozhu == "中奖")
                 {
-                    //倍投金额
-                    var lossMultiple = rule.LossMultiple.Split('|');
-                    var profitMultiple = rule.ProfitMultiple.Split('|');
-                    var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
-                    var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
-                    var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
-
-                    if (data.biaozhu == "中奖")
+                    if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
                     {
-                        if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
-                        {
-                            rule.ProfitMultipleLevel = 0;
-                        }
-                        rule.ProfitMultipleLevel++;
-                        rule.LossMultipleLevel = 0;
+                        rule.ProfitMultipleLevel = 0;
+                    }
+                    rule.ProfitMultipleLevel++;
+                    rule.LossMultipleLevel = 0;
 
+                }
+                else
+                {
+                    if (rule.LossMultipleLevel >= lossMultiple.Length - 1)
+                    {
+                        rule.LossMultipleLevel = 0;
                     }
                     else
                     {
-                        if (rule.LossMultipleLevel >= lossMultiple.Length - 1)
-                        {
-                            rule.LossMultipleLevel = 0;
-                        }
-                        else
-                        {
-                            rule.LossMultipleLevel++;
-                        }
-                        rule.ProfitMultipleLevel = 0;
+                        rule.LossMultipleLevel++;
                     }
-
-                    var model = new AnalogData
-                    {
-                        id = item.id.ToString(),
-                        kaijiangshijian = item.create_time.ToString(),
-                        qihao = item.qishu,
-                        kaijiangshuzi = item.one + "+" + item.two + "+" + item.three + "=" + (Convert.ToInt32(item.one) + Convert.ToInt32(item.two) + Convert.ToInt32(item.three)),
-                        shuxing = item.zuhe + "|" + item.teshu + "|" + item.jizhi,
-                        biaozhu = data.biaozhu,
-                        xiazhuneirong = data.xiazhuneirong,
-                        yingkuijine = data.yingkuijine
-                    };
-                    list.Add(model);
+                    rule.ProfitMultipleLevel = 0;
                 }
 
-                //这里单独计算当前金额
-                list = CalculateCurrentAmount(list);
-                return list;
+                model = new AnalogData
+                {
+                    id = item.id.ToString(),
+                    biaozhu = data.biaozhu,
+                    xiazhuneirong = data.xiazhuneirong,
+                    yingkuijine = data.yingkuijine
+                };
             }
             catch (Exception ex)
             {
             }
-            return list;
+            return model;
         }
 
         /// <summary>
@@ -185,14 +263,17 @@ namespace BLL
                     data.xiazhuneirong = data.xiazhuneirong + item + "," + profitMultipleMoney + "|";
 
                     data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + money).ToString();
-                    data.biaozhu = "中奖";
+                    data.biaozhu += "中奖|";
                 }
                 else
                 {
                     data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-lossMultipleMoney)).ToString();
                     data.xiazhuneirong = data.xiazhuneirong + item + "," + lossMultipleMoney + "|";
+                    data.biaozhu += "未中|";
                 }
             }
+
+            data.biaozhu = data.biaozhu.Substring(0, data.biaozhu.Length - 1);
             data.xiazhuneirong = data.xiazhuneirong.Substring(0, data.xiazhuneirong.Length - 1);
             return data;
         }
