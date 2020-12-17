@@ -16,7 +16,8 @@ namespace BLL
             var path = Environment.CurrentDirectory + "//ConfigurationFile.ini";
             var list = Tool.Helper.ReadTheLocalFile(path).Split('\n');
             //_connString = $"Data Source ={list[0].Split(':')[1]}; Initial Catalog = {list[1].Split(':')[1]}; User ID ={list[3].Split(':')[1]}; Password ={list[3].Split(':')[1]};PORT= 33060 ;Character Set=utf8; Allow User Variables=True";
-            _connString = $"Data Source =localhost; Initial Catalog = {list[8].Split(':')[1]}; User ID ={list[6].Split(':')[1]}; Password ={list[7].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+            //_connString = $"Data Source =localhost; Initial Catalog = {list[8].Split(':')[1]}; User ID ={list[6].Split(':')[1]}; Password ={list[7].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+            _connString = Tool.Helper.GetConfigValue("Lochost");
         }
 
         public Ruleinfo GetRuleinfo(int id)

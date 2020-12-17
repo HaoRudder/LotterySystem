@@ -507,6 +507,24 @@ namespace Tool
         }
 
         /// <summary>
+        /// 获取AppSettings中配置
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string GetConfigValue(string name)
+        {
+            try
+            {
+                return ConfigurationManager.AppSettings[name];
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+
+        }
+
+        /// <summary>
         /// 根据主键名称获取自动投注配置信息
         /// </summary>
         /// <param name="key"></param>

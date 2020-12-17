@@ -92,8 +92,6 @@ namespace BLL
             return list[0];
         }
 
-
-
         /// <summary>
         /// 断开后投注算法
         /// </summary>
@@ -106,20 +104,22 @@ namespace BLL
             try
             {
                 var number = 0;
+                var isSatisfied = false;
+                var isBet = false;
 
                 //投注条件算法
                 foreach (var item in dataList)
                 {
-                    if (number == rule.JudgeNumber)
+                    if (isSatisfied && JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == 0)
                     {
-                        number = 0;
-                        var model = BetAlgorithm(rule, item);
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
+                        isBet = true;
+                        isSatisfied = false;
+                        continue;
+                    }
+                    else
+                    {
+                        isSatisfied = false;
+                        //number = 0;
                     }
 
                     var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
@@ -130,6 +130,25 @@ namespace BLL
                     else
                     {
                         number += tempNumber;
+                    }
+
+                    if (number == rule.JudgeNumber && !isBet && !isSatisfied)
+                    {
+                        isSatisfied = true;
+                        continue;
+                    }
+
+                    if (isBet)
+                    {
+                        isBet = false;
+                        number = 0;
+                        var model = BetAlgorithm(rule, item);
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
                     }
                 }
 

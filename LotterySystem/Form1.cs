@@ -17,8 +17,8 @@ namespace LotterySystem
     {
         public Form1()
         {
-            新版模拟数据ToolStripMenuItem_Click(null, null);
-            return;
+            //新版模拟数据ToolStripMenuItem_Click(null, null);
+            //return;
             InitializeComponent();
         }
 
