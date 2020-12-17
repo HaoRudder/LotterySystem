@@ -184,11 +184,13 @@ namespace BLL
                     if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
                     {
                         number++;
+                        return 1;
                     }
 
                     if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
                     {
                         number++;
+                        return 1;
                     }
 
                     if (number == list.Length)
@@ -196,6 +198,7 @@ namespace BLL
                         return 1;
                     }
                 }
+                
                 return 0;
             }
             catch (Exception e)
@@ -222,7 +225,7 @@ namespace BLL
                 var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
                 var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
 
-                if (data.biaozhu == "中奖")
+                if (Convert.ToDecimal(data.yingkuijine) > 0)
                 {
                     if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
                     {
@@ -230,7 +233,6 @@ namespace BLL
                     }
                     rule.ProfitMultipleLevel++;
                     rule.LossMultipleLevel = 0;
-
                 }
                 else
                 {

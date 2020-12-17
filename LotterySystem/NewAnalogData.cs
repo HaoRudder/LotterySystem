@@ -20,36 +20,6 @@ namespace LotterySystem
             InitializeComponent();
         }
 
-        private void button7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboBox10_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-
-        }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-
-        }
-
         private void NewAnalogData_Load(object sender, EventArgs e)
         {
             comboBox10.SelectedIndex = 0;
