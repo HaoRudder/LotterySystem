@@ -111,11 +111,18 @@ namespace BLL
                 //投注条件算法
                 foreach (var item in dataList)
                 {
-                    if (isSatisfied && JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == 0)
+                    if (isSatisfied)
                     {
-                        isBet = true;
-                        isSatisfied = false;
-                        continue;
+                        if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == 0)
+                        {
+                            isBet = true;
+                            isSatisfied = false;
+                            continue;
+                        }
+                        else
+                        {
+                            number = 0;
+                        }
                     }
                     else
                     {
@@ -198,7 +205,7 @@ namespace BLL
                         return 1;
                     }
                 }
-                
+
                 return 0;
             }
             catch (Exception e)
