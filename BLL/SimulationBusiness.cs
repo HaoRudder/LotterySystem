@@ -16,7 +16,8 @@ namespace BLL
             var path = Environment.CurrentDirectory + "//ConfigurationFile.ini";
             var list = Tool.Helper.ReadTheLocalFile(path).Split('\n');
             //_connString = $"Data Source ={list[0].Split(':')[1]}; Initial Catalog = {list[1].Split(':')[1]}; User ID ={list[3].Split(':')[1]}; Password ={list[3].Split(':')[1]};PORT= 33060 ;Character Set=utf8; Allow User Variables=True";
-            _connString = $"Data Source =localhost; Initial Catalog = {list[8].Split(':')[1]}; User ID ={list[6].Split(':')[1]}; Password ={list[7].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+            //_connString = $"Data Source =localhost; Initial Catalog = {list[8].Split(':')[1]}; User ID ={list[6].Split(':')[1]}; Password ={list[7].Split(':')[1]};Character Set=utf8; Allow User Variables=True";
+            _connString = Tool.Helper.GetConfigValue("Lochost");
         }
 
         /// <summary>
@@ -92,8 +93,6 @@ namespace BLL
             return list[0];
         }
 
-
-
         /// <summary>
         /// 断开后投注算法
         /// </summary>
@@ -106,20 +105,22 @@ namespace BLL
             try
             {
                 var number = 0;
+                var isSatisfied = false;
+                var isBet = false;
 
                 //投注条件算法
                 foreach (var item in dataList)
                 {
-                    if (number == rule.JudgeNumber)
+                    if (isSatisfied && JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == 0)
                     {
-                        number = 0;
-                        var model = BetAlgorithm(rule, item);
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
+                        isBet = true;
+                        isSatisfied = false;
+                        continue;
+                    }
+                    else
+                    {
+                        isSatisfied = false;
+                        //number = 0;
                     }
 
                     var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
@@ -130,6 +131,25 @@ namespace BLL
                     else
                     {
                         number += tempNumber;
+                    }
+
+                    if (number == rule.JudgeNumber && !isBet && !isSatisfied)
+                    {
+                        isSatisfied = true;
+                        continue;
+                    }
+
+                    if (isBet)
+                    {
+                        isBet = false;
+                        number = 0;
+                        var model = BetAlgorithm(rule, item);
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
                     }
                 }
 
@@ -164,11 +184,13 @@ namespace BLL
                     if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
                     {
                         number++;
+                        return 1;
                     }
 
                     if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
                     {
                         number++;
+                        return 1;
                     }
 
                     if (number == list.Length)
@@ -176,6 +198,7 @@ namespace BLL
                         return 1;
                     }
                 }
+                
                 return 0;
             }
             catch (Exception e)
@@ -202,7 +225,7 @@ namespace BLL
                 var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
                 var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
 
-                if (data.biaozhu == "中奖")
+                if (Convert.ToDecimal(data.yingkuijine) > 0)
                 {
                     if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
                     {
@@ -210,7 +233,6 @@ namespace BLL
                     }
                     rule.ProfitMultipleLevel++;
                     rule.LossMultipleLevel = 0;
-
                 }
                 else
                 {
