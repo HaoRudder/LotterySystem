@@ -113,7 +113,7 @@ namespace BLL
                 {
                     if (isSatisfied)
                     {
-                        if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == 0)
+                        if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == (rule.JudgeCondition == "连续开出" ? 0 : 1))
                         {
                             isBet = true;
                             isSatisfied = false;
@@ -148,6 +148,10 @@ namespace BLL
 
                     if (isBet)
                     {
+                        if (item.id == 36525)
+                        {
+
+                        }
                         isBet = false;
                         number = 0;
                         var model = BetAlgorithm(rule, item);
@@ -185,26 +189,56 @@ namespace BLL
             {
                 var list = openContent.Split('|');
                 var number = 0;
-                foreach (var item in list)
+
+                if (judgeCondition == "连续开出")
                 {
-                    var openStr = GetWinContent(row, item);
-                    if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
+                    foreach (var item in list)
                     {
-                        number++;
-                        return 1;
+                        var openStr = GetWinContent(row, item);
+                        if (!string.IsNullOrWhiteSpace(openStr))
+                        {
+                            number++;
+                            return 1;
+                        }
                     }
+                }
 
-                    if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
+                if (judgeCondition == "连续未开")
+                {
+                    foreach (var item in list)
                     {
-                        number++;
-                        return 1;
+                        var openStr = GetWinContent(row, item);
+                        if (string.IsNullOrWhiteSpace(openStr))
+                        {
+                            number++;
+                        }
                     }
-
                     if (number == list.Length)
                     {
                         return 1;
                     }
                 }
+
+                //foreach (var item in list)
+                //{
+                //    var openStr = GetWinContent(row, item);
+                //    if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
+                //    {
+                //        number++;
+                //        return 1;
+                //    }
+
+                //    if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
+                //    {
+                //        number++;
+                //        return 1;
+                //    }
+
+                //    if (number == list.Length)
+                //    {
+                //        return 1;
+                //    }
+                //}
 
                 return 0;
             }
@@ -228,9 +262,19 @@ namespace BLL
                 //倍投金额
                 var lossMultiple = rule.LossMultiple.Split('|');
                 var profitMultiple = rule.ProfitMultiple.Split('|');
-                var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
-                var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
-                var data = WinOrNot(item, rule.BetContent, profitMultipleMoney, lossMultipleMoney, rule.OddsID);
+                //var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
+                //var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+
+                decimal betMoney = 0;
+                if (rule.LossMultipleLevel > -1)
+                {
+                    betMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
+                }
+                else
+                {
+                    betMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+                }
+                var data = WinOrNot(item, rule.BetContent, betMoney, rule.OddsID);
 
                 if (Convert.ToDecimal(data.yingkuijine) > 0)
                 {
@@ -238,8 +282,17 @@ namespace BLL
                     {
                         rule.ProfitMultipleLevel = 0;
                     }
-                    rule.ProfitMultipleLevel++;
-                    rule.LossMultipleLevel = 0;
+
+                    if (rule.LossMultipleLevel > -1)
+                    {
+                        rule.ProfitMultipleLevel = 0;
+                    }
+                    else
+                    {
+                        rule.ProfitMultipleLevel++;
+                    }
+
+                    rule.LossMultipleLevel = -1;
                 }
                 else
                 {
@@ -272,7 +325,7 @@ namespace BLL
         /// 是否中奖并计算赔率
         /// </summary>
         /// <returns></returns>
-        public AnalogData WinOrNot(DataInfo dataInfo, string betContent, decimal profitMultipleMoney, decimal lossMultipleMoney, int oddsID)
+        public AnalogData WinOrNot(DataInfo dataInfo, string betContent, decimal betMoney, int oddsID)
         {
             var data = new AnalogData();
 
@@ -287,17 +340,17 @@ namespace BLL
                     var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
                     var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
                     var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
-                    var money = profitMultipleMoney * Convert.ToDecimal(val);
+                    var money = betMoney * Convert.ToDecimal(val);
 
-                    data.xiazhuneirong = data.xiazhuneirong + item + "," + profitMultipleMoney + "|";
+                    data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
 
                     data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + money).ToString();
                     data.biaozhu += "中奖|";
                 }
                 else
                 {
-                    data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-lossMultipleMoney)).ToString();
-                    data.xiazhuneirong = data.xiazhuneirong + item + "," + lossMultipleMoney + "|";
+                    data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-betMoney)).ToString();
+                    data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
                     data.biaozhu += "未中|";
                 }
             }
@@ -317,7 +370,7 @@ namespace BLL
         {
             var openContent = string.Empty;
 
-            if (betContent.Contains("特码") && dataInfo.sum == betContent)
+            if (betContent.Contains("特码") && dataInfo.sum == betContent.Replace("特码", string.Empty))
             {
                 openContent = betContent;
             }

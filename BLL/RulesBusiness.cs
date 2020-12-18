@@ -360,9 +360,15 @@ namespace BLL
         /// </summary>
         public int ProfitMultipleLevel { get; set; }
 
+        private int lossMultipleLevel = -1;
+
         /// <summary>
         /// 亏损倍投档位（扩展字段）
         /// </summary>
-        public int LossMultipleLevel { get; set; }
+        public int LossMultipleLevel
+        {
+            get { return lossMultipleLevel; }
+            set { lossMultipleLevel = value; }
+        }
     }
 }
