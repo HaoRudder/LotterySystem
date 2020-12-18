@@ -18,6 +18,8 @@ namespace LotterySystem
         public Form1()
         {
             新版模拟数据ToolStripMenuItem_Click(null, null);
+            var path = Tool.Helper.ReadConfiguration(Tool.ConfigurationType.ProgramPath) + "\\GetTheLatestData.exe";
+            var result = Tool.Helper.OpenFile(path);
             return;
             InitializeComponent();
         }
