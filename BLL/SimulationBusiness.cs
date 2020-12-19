@@ -58,7 +58,7 @@ namespace BLL
             return dataLis.Select(item => new AnalogData
             {
                 id = item.id.ToString(),
-                kaijiangshijian = item.create_time.ToString(CultureInfo.InvariantCulture),
+                kaijiangshijian = Convert.ToDateTime(item.create_time).ToString("yyyy-MM-dd HH:mm:ss"),
                 qihao = item.qishu,
                 kaijiangshuzi = $"{item.one}+{item.two}+{item.three}={Convert.ToInt32(item.one) + Convert.ToInt32(item.two) + Convert.ToInt32(item.three)}",
                 shuxing = $"{item.zuhe}|{item.teshu}|{item.jizhi}",
@@ -262,8 +262,6 @@ namespace BLL
                 //倍投金额
                 var lossMultiple = rule.LossMultiple.Split('|');
                 var profitMultiple = rule.ProfitMultiple.Split('|');
-                //var lossMultipleMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
-                //var profitMultipleMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
 
                 decimal betMoney = 0;
                 if (rule.LossMultipleLevel > -1)
@@ -342,8 +340,8 @@ namespace BLL
                     var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
                     var money = betMoney * Convert.ToDecimal(val);
 
-                    data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
 
+                    data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
                     data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + money).ToString();
                     data.biaozhu += "中奖|";
                 }
@@ -358,6 +356,75 @@ namespace BLL
             data.biaozhu = data.biaozhu.Substring(0, data.biaozhu.Length - 1);
             data.xiazhuneirong = data.xiazhuneirong.Substring(0, data.xiazhuneirong.Length - 1);
             return data;
+        }
+
+        /// <summary>
+        /// 计算赔率后的金额
+        /// </summary>
+        /// <param name="dataInfo"></param>
+        /// <param name="oddsID"></param>
+        /// <param name="betMoney"></param>
+        /// <param name="openContent"></param>
+        /// <param name="teshuzuhe"></param>
+        /// <param name="temaStr"></param>
+        /// <returns></returns>
+        public decimal CalculateOdds(DataInfo dataInfo, int oddsID, decimal betMoney, string openContent, string teshuzuhe, string temaStr)
+        {
+            var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
+            var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
+            var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
+            var money = betMoney * Convert.ToDecimal(val);
+
+            if (oddsInfo.baozitongsha && teshuzuhe.Contains("豹子"))
+            {
+                return 0;
+            }
+            else if ((oddsInfo.baozihuiben && teshuzuhe.Contains("豹子")) || (oddsInfo.duizihuiben && teshuzuhe.Contains("对子")) || (oddsInfo.shunzihuiben && teshuzuhe.Contains("顺子")) || (oddsInfo.linjiuhuiben && (temaStr.Contains("0") || temaStr.Contains("9"))))
+            {
+                return betMoney;
+            }
+
+            //计算1314赔率
+            if (temaStr.Contains("13") || temaStr.Contains("14"))
+            {
+                decimal zuhe = 0;
+                decimal sixiang = 0;
+                decimal tema = 0;
+                decimal duizi = 0;
+
+                if (betMoney > oddsInfo.fenshu)
+                {
+                    zuhe = oddsInfo.downzuhe;
+                    sixiang = oddsInfo.downsixiang;
+                    tema = oddsInfo.downtema;
+                    duizi = oddsInfo.downduizi;
+                }
+                else
+                {
+                    zuhe = oddsInfo.topzuhe;
+                    sixiang = oddsInfo.topsixiang;
+                    tema = oddsInfo.toptema;
+                    duizi = oddsInfo.topduizi;
+                }
+
+                if (openContent == "对子")
+                {
+                    money = betMoney * Convert.ToDecimal(duizi);
+                }
+                else if (openContent == "组合")
+                {
+
+                }
+                else if (openContent == "四项")
+                {
+
+                }
+                else if (openContent.Contains("特码"))
+                {
+                    money = betMoney * Convert.ToDecimal(tema);
+                }
+            }
+            return 0;
         }
 
         /// <summary>

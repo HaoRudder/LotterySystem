@@ -22,7 +22,10 @@ namespace LotterySystem
 
         private void NewAnalogData_Load(object sender, EventArgs e)
         {
+            begin.Text = DateTime.Now.ToString("yyyy-MM-dd 00:00:00");
+            end.Text = DateTime.Now.ToString("yyyy-MM-dd 23:59:59");
             comboBox10.SelectedIndex = 0;
+
             GetList();
         }
 
@@ -148,6 +151,30 @@ namespace LotterySystem
             dataGridView1.Columns[7].Width = 80;
             dataGridView1.Columns[8].HeaderCell.Value = "标注";
             dataGridView1.Columns[8].Width = 100;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var selectIndex = 0;
+            if (dataGridView1.CurrentRow != null)
+            {
+                selectIndex = dataGridView1.CurrentRow.Index;
+            }
+
+            for (int i = selectIndex + 1; i < dataGridView1.Rows.Count; i++)
+            {
+                if (i == dataGridView1.Rows.Count - 1)
+                {
+                    i = 0;
+                }
+                var row = dataGridView1.Rows[i];
+                if (!string.IsNullOrWhiteSpace(row.Cells["xiazhuneirong"].Value?.ToString()))
+                {
+                    dataGridView1.Rows[i].Selected = true;
+                    dataGridView1.CurrentCell = dataGridView1.Rows[i].Cells[0];
+                    return;
+                }
+            }
         }
     }
 }
