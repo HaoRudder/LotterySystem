@@ -154,7 +154,7 @@ namespace BLL
                         }
                         isBet = false;
                         number = 0;
-                        var model = BetAlgorithm(rule, item);
+                        var model = BetAlgorithm(rule, item);//投注算法
                         foreach (var temp in initList.Where(temp => temp.id == model.id))
                         {
                             temp.biaozhu = model.biaozhu ?? string.Empty;
@@ -335,11 +335,12 @@ namespace BLL
                 if (!string.IsNullOrWhiteSpace(openContent))
                 {
                     //计算赔率
-                    var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
-                    var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
-                    var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
-                    var money = betMoney * Convert.ToDecimal(val);
-
+                    //var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
+                    //var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
+                    //var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
+                    //var money = betMoney * Convert.ToDecimal(val);
+                    var teshuzuhe = dataInfo.zuhe + "|" + dataInfo.teshu;
+                    var money = CalculateOdds(dataInfo, oddsID, betMoney, openContent, teshuzuhe, dataInfo.sum);
 
                     data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
                     data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + money).ToString();
@@ -379,7 +380,7 @@ namespace BLL
             {
                 return 0;
             }
-            else if ((oddsInfo.baozihuiben && teshuzuhe.Contains("豹子")) || (oddsInfo.duizihuiben && teshuzuhe.Contains("对子")) || (oddsInfo.shunzihuiben && teshuzuhe.Contains("顺子")) || (oddsInfo.linjiuhuiben && (temaStr.Contains("0") || temaStr.Contains("9"))))
+            else if ((oddsInfo.baozihuiben && teshuzuhe.Contains("豹子")) || (oddsInfo.duizihuiben && teshuzuhe.Contains("对子")) || (oddsInfo.shunzihuiben && teshuzuhe.Contains("顺子")) || (oddsInfo.linjiuhuiben && (temaStr == "0" || temaStr == "9")))
             {
                 return betMoney;
             }
@@ -411,20 +412,20 @@ namespace BLL
                 {
                     money = betMoney * Convert.ToDecimal(duizi);
                 }
-                else if (openContent == "组合")
+                else if (openContent == "大单" || openContent == "小单" || openContent == "小双" || openContent == "大双")
                 {
-
+                    money = betMoney * Convert.ToDecimal(zuhe);
                 }
-                else if (openContent == "四项")
+                else if (openContent == "大" || openContent == "小" || openContent == "单" || openContent == "双")
                 {
-
+                    money = betMoney * Convert.ToDecimal(sixiang);
                 }
                 else if (openContent.Contains("特码"))
                 {
                     money = betMoney * Convert.ToDecimal(tema);
                 }
             }
-            return 0;
+            return money;
         }
 
         /// <summary>
