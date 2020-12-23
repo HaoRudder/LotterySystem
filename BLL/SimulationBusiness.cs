@@ -84,9 +84,9 @@ namespace BLL
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                throw;
             }
             //var result = new List<AnalogData>();
             //return result;
@@ -206,7 +206,6 @@ namespace BLL
             }
             catch (Exception ex)
             {
-
                 throw;
             }
             return initList;
@@ -351,6 +350,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
+                throw;
             }
             return model;
         }
