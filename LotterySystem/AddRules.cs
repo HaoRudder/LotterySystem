@@ -31,6 +31,12 @@ namespace LotterySystem
 
         private void button1_Click(object sender, EventArgs e)
         {
+            var isPasse = Verification();
+            if (!isPasse)
+            {
+                return;
+            }
+
             var id = GetID();
             if (id == -1)
             {
@@ -61,7 +67,7 @@ namespace LotterySystem
                 IsLossBetNow = checkBox3.CheckState == CheckState.Checked ? 1 : 0,
                 IsProfitBetNow = checkBox6.CheckState == CheckState.Checked ? 1 : 0,
                 BetGearStop = checkBox7.CheckState == CheckState.Checked ? 1 : 0,
-                CrackAfterBet = checkBox1.CheckState == CheckState.Checked ? 1 : 0,
+                //CrackAfterBet = checkBox1.CheckState == CheckState.Checked ? 1 : 0,
                 RuleType = Convert.ToInt32(comboBox1.Text.Substring(0, 1)),
             });
 
@@ -100,16 +106,6 @@ namespace LotterySystem
                     MessageBox.Show("删除失败");
                 }
             }
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void textBox3_Click(object sender, EventArgs e)
@@ -354,7 +350,7 @@ namespace LotterySystem
             textBox5.Text = data.LossMultiple;
             checkBox3.CheckState = data.IsLossBetNow == 1 ? CheckState.Checked : CheckState.Unchecked;
             checkBox6.CheckState = data.IsProfitBetNow == 1 ? CheckState.Checked : CheckState.Unchecked;
-            checkBox1.CheckState = data.BetGearStop == 1 ? CheckState.Checked : CheckState.Unchecked;
+            checkBox7.CheckState = data.BetGearStop == 1 ? CheckState.Checked : CheckState.Unchecked;
             comboBox1.SelectedIndex = data.RuleType - 1;
         }
 
@@ -376,47 +372,76 @@ namespace LotterySystem
 
         private void button2_Click(object sender, EventArgs e)
         {
+            var isPasse = Verification();
+            if (!isPasse)
+            {
+                return;
+            }
+            AddOrUpdate();
+        }
+
+        public bool Verification()
+        {
             if (string.IsNullOrWhiteSpace(textBox3.Text))
             {
                 MessageBox.Show("开奖内容不能为空");
                 textBox3.Focus();
                 textBox3_Click(textBox3, null);
-                return;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(comboBox2.Text))
             {
                 MessageBox.Show("投注条件不能为空");
                 comboBox2.Focus();
                 comboBox2.DroppedDown = true;
-                return;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show("判断期数不能为空");
                 textBox1.Focus();
-                return;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(textBox9.Text))
             {
                 MessageBox.Show("投注内容不能为空");
                 textBox3_Click(textBox9, null);
                 textBox9.Focus();
-                return;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(comboBox1.Text))
             {
                 MessageBox.Show("规则类型不能为空");
                 comboBox1.Focus();
                 comboBox1.DroppedDown = true;
-                return;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(textBox4.Text) && string.IsNullOrWhiteSpace(textBox5.Text))
             {
                 MessageBox.Show("盈利倍投或亏损倍投不能为空");
                 textBox4.Focus();
-                return;
+                return false;
             }
-            AddOrUpdate();
+            return true;
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            var name = ((CheckBox)sender).Name;
+            if (name == "checkBox3")
+            {
+                if (checkBox3.CheckState == CheckState.Checked)
+                {
+                    checkBox6.CheckState = CheckState.Unchecked;
+                }
+            }
+            else
+            {
+                if (checkBox6.CheckState == CheckState.Checked)
+                {
+                    checkBox3.CheckState = CheckState.Unchecked;
+                }
+            }
         }
     }
 }

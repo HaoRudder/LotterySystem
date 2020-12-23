@@ -80,13 +80,13 @@ namespace BLL
                 StopProfit '止盈',
                 StopLoss '只亏',
                 intervalBetHours '间隔投注小时数',
-                IF(IsTurnBet=0,'是','否') '是否转向投注',
+                IF(IsTurnBet=0,'否','是') '是否转向投注',
                 ProfitMultiple '盈利倍投',
                 LossMultiple '亏损倍投',
-                IF(IsProfitBetNow =0,'是','否') '盈利后立即下注',
-                IF(IsLossBetNow =0,'是','否') '亏损后立即下注',
-                IF(BetGearStop =0,'是','否') '倍投完后停止',
-			    IF(CrackAfterBet  =0,'是','否') '断开后投注',
+                IF(IsProfitBetNow =0,'否','是') '盈利后立即下注',
+                IF(IsLossBetNow =0,'否','是') '亏损后立即下注',
+                IF(BetGearStop =0,'否','是') '倍投完后停止',
+			    IF(CrackAfterBet  =0,'否','是') '断开后投注',
                 CreationTime '创建时间'      
                 from ruleinfo order by id desc";
 

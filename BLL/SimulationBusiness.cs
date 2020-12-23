@@ -108,9 +108,18 @@ namespace BLL
                 var isSatisfied = false;
                 var isBet = false;
 
+                var lossMultipleList = rule.LossMultiple.Split('|');
+                var profitMultipleList = rule.ProfitMultiple.Split('|');
+
                 //投注条件算法
-                foreach (var item in dataList)
+                for (int i = 0; i < dataList.Count; i++)
                 {
+                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length-1 || rule.ProfitMultipleLevel == profitMultipleList.Length-1))
+                    {
+                        break;
+                    }
+
+                    var item = dataList[i];
                     if (isSatisfied)
                     {
                         if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == (rule.JudgeCondition == "连续开出" ? 0 : 1))
@@ -148,18 +157,46 @@ namespace BLL
 
                     if (isBet)
                     {
-                        if (item.id == 36525)
-                        {
-
-                        }
                         isBet = false;
                         number = 0;
                         var model = BetAlgorithm(rule, item);//投注算法
+
                         foreach (var temp in initList.Where(temp => temp.id == model.id))
                         {
                             temp.biaozhu = model.biaozhu ?? string.Empty;
                             temp.xiazhuneirong = model.xiazhuneirong;
                             temp.yingkuijine = model.yingkuijine;
+                        }
+
+                        if (rule.IsLossBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) < 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
+                        }
+                        else if (rule.IsProfitBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) > 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
                         }
                     }
                 }
@@ -174,7 +211,6 @@ namespace BLL
             }
             return initList;
         }
-
 
         /// <summary>
         /// 判断投注条件是否满足
