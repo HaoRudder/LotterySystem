@@ -290,24 +290,22 @@ namespace BLL
                 var lossMultiple = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
                 var profitMultiple = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
-                decimal betMoney;
+                decimal betMoney = 0;
                 if (lossMultiple.Length > 0 && rule.LossMultipleLevel > -1)
                 {
                     betMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
                 }
                 else
                 {
-                    betMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+                    if (profitMultiple.Length > 0)
+                    {
+                        betMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
+                    }
                 }
                 var data = WinOrNot(item, rule.BetContent, betMoney, rule.OddsID);
 
-                if (Convert.ToDecimal(data.yingkuijine) > 0)
+                if (Convert.ToDecimal(data.yingkuijine) >= 0)
                 {
-                    if (rule.ProfitMultipleLevel >= profitMultiple.Length - 1)
-                    {
-                        rule.ProfitMultipleLevel = 0;
-                    }
-
                     if (rule.LossMultipleLevel > -1)
                     {
                         rule.ProfitMultipleLevel = 0;
@@ -317,6 +315,10 @@ namespace BLL
                         rule.ProfitMultipleLevel++;
                     }
 
+                    if (rule.ProfitMultipleLevel >= profitMultiple.Length)
+                    {
+                        rule.ProfitMultipleLevel = 0;
+                    }
                     rule.LossMultipleLevel = -1;
                 }
                 else

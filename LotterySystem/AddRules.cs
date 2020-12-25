@@ -416,9 +416,9 @@ namespace LotterySystem
                 comboBox1.DroppedDown = true;
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(textBox4.Text) && string.IsNullOrWhiteSpace(textBox5.Text))
+            if (string.IsNullOrWhiteSpace(textBox4.Text))
             {
-                MessageBox.Show("盈利倍投或亏损倍投不能为空");
+                MessageBox.Show("盈利倍投不能为空,至少含有一个档位");
                 textBox4.Focus();
                 return false;
             }
