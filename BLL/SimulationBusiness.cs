@@ -108,13 +108,13 @@ namespace BLL
                 var isSatisfied = false;
                 var isBet = false;
 
-                var lossMultipleList = rule.LossMultiple.Split('|');
-                var profitMultipleList = rule.ProfitMultiple.Split('|');
+                var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 //投注条件算法
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length-1 || rule.ProfitMultipleLevel == profitMultipleList.Length-1))
+                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
                     {
                         break;
                     }
@@ -128,15 +128,7 @@ namespace BLL
                             isSatisfied = false;
                             continue;
                         }
-                        else
-                        {
-                            number = 0;
-                        }
-                    }
-                    else
-                    {
-                        isSatisfied = false;
-                        //number = 0;
+                        number = 0;
                     }
 
                     var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
@@ -291,15 +283,15 @@ namespace BLL
         /// <returns></returns>
         public AnalogData BetAlgorithm(Ruleinfo rule, DataInfo item)
         {
-            AnalogData model = null;
+            AnalogData model;
             try
             {
                 //倍投金额
-                var lossMultiple = rule.LossMultiple.Split('|');
-                var profitMultiple = rule.ProfitMultiple.Split('|');
+                var lossMultiple = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                var profitMultiple = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
-                decimal betMoney = 0;
-                if (rule.LossMultipleLevel > -1)
+                decimal betMoney;
+                if (lossMultiple.Length > 0 && rule.LossMultipleLevel > -1)
                 {
                     betMoney = Convert.ToDecimal(lossMultiple[rule.LossMultipleLevel]);
                 }
