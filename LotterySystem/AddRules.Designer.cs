@@ -41,11 +41,8 @@ namespace LotterySystem
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.checkBox10 = new System.Windows.Forms.CheckBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
-            this.checkBox9 = new System.Windows.Forms.CheckBox();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
@@ -65,11 +62,17 @@ namespace LotterySystem
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkedListBox1);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.label5);
@@ -81,11 +84,8 @@ namespace LotterySystem
             this.groupBox1.Controls.Add(this.textBox9);
             this.groupBox1.Controls.Add(this.checkedListBox2);
             this.groupBox1.Controls.Add(this.textBox3);
-            this.groupBox1.Controls.Add(this.checkedListBox1);
             this.groupBox1.Controls.Add(this.checkBox10);
             this.groupBox1.Controls.Add(this.textBox8);
-            this.groupBox1.Controls.Add(this.checkBox9);
-            this.groupBox1.Controls.Add(this.checkBox8);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.checkBox7);
@@ -252,33 +252,6 @@ namespace LotterySystem
             this.textBox3.TabIndex = 50;
             this.textBox3.Click += new System.EventHandler(this.textBox3_Click);
             // 
-            // checkedListBox1
-            // 
-            this.checkedListBox1.CheckOnClick = true;
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Items.AddRange(new object[] {
-            "大",
-            "小",
-            "单",
-            "双",
-            "大单",
-            "大双",
-            "小单",
-            "小双",
-            "极大",
-            "极小",
-            "对子",
-            "顺子",
-            "豹子",
-            "特码13",
-            "特码14"});
-            this.checkedListBox1.Location = new System.Drawing.Point(6, 39);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(100, 244);
-            this.checkedListBox1.TabIndex = 49;
-            this.checkedListBox1.Visible = false;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
-            // 
             // checkBox10
             // 
             this.checkBox10.AutoSize = true;
@@ -296,28 +269,6 @@ namespace LotterySystem
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(48, 21);
             this.textBox8.TabIndex = 41;
-            // 
-            // checkBox9
-            // 
-            this.checkBox9.AutoSize = true;
-            this.checkBox9.Location = new System.Drawing.Point(7, 106);
-            this.checkBox9.Name = "checkBox9";
-            this.checkBox9.Size = new System.Drawing.Size(72, 16);
-            this.checkBox9.TabIndex = 40;
-            this.checkBox9.Text = "亏损倍投";
-            this.checkBox9.UseVisualStyleBackColor = true;
-            // 
-            // checkBox8
-            // 
-            this.checkBox8.AutoSize = true;
-            this.checkBox8.Checked = true;
-            this.checkBox8.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox8.Location = new System.Drawing.Point(7, 77);
-            this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(72, 16);
-            this.checkBox8.TabIndex = 39;
-            this.checkBox8.Text = "盈利倍投";
-            this.checkBox8.UseVisualStyleBackColor = true;
             // 
             // label9
             // 
@@ -497,6 +448,51 @@ namespace LotterySystem
             this.comboBox2.Size = new System.Drawing.Size(77, 20);
             this.comboBox2.TabIndex = 3;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(20, 78);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 12);
+            this.label7.TabIndex = 62;
+            this.label7.Text = "盈利倍投";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(20, 107);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 12);
+            this.label10.TabIndex = 63;
+            this.label10.Text = "亏损倍投";
+            // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.CheckOnClick = true;
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Items.AddRange(new object[] {
+            "大",
+            "小",
+            "单",
+            "双",
+            "大单",
+            "大双",
+            "小单",
+            "小双",
+            "极大",
+            "极小",
+            "对子",
+            "顺子",
+            "豹子",
+            "特码13",
+            "特码14"});
+            this.checkedListBox1.Location = new System.Drawing.Point(6, 39);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(100, 244);
+            this.checkedListBox1.TabIndex = 64;
+            this.checkedListBox1.Visible = false;
+            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
+            // 
             // AddRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -519,8 +515,6 @@ namespace LotterySystem
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox checkBox10;
         private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.CheckBox checkBox9;
-        private System.Windows.Forms.CheckBox checkBox8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox checkBox7;
@@ -541,7 +535,6 @@ namespace LotterySystem
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.CheckedListBox checkedListBox2;
         private System.Windows.Forms.TextBox textBox10;
@@ -552,5 +545,8 @@ namespace LotterySystem
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label7;
     }
 }

@@ -302,6 +302,8 @@ namespace BLL
                         betMoney = Convert.ToDecimal(profitMultiple[rule.ProfitMultipleLevel]);
                     }
                 }
+
+                //是否中奖并计算赔率
                 var data = WinOrNot(item, rule.BetContent, betMoney, rule.OddsID);
 
                 if (Convert.ToDecimal(data.yingkuijine) >= 0)
@@ -360,15 +362,12 @@ namespace BLL
             //判断是否中奖
             foreach (var item in betContent.Split('|'))
             {
+                data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) - betMoney).ToString();
                 var openContent = GetWinContent(dataInfo, item);
 
                 if (!string.IsNullOrWhiteSpace(openContent))
                 {
-                    //计算赔率
-                    //var oddsInfo = OddsBusiness.GetOddssInfo().FirstOrDefault(x => x.OddsID == oddsID);
-                    //var pinyin = Tool.Helper.ConvertToAllSpell(openContent);
-                    //var val = oddsInfo.GetType().GetProperty(pinyin).GetValue(oddsInfo, null);
-                    //var money = betMoney * Convert.ToDecimal(val);
+                    //计算赔率后的金额
                     var teshuzuhe = dataInfo.zuhe + "|" + dataInfo.teshu;
                     var money = CalculateOdds(dataInfo, oddsID, betMoney, openContent, teshuzuhe, dataInfo.sum);
 
@@ -378,7 +377,7 @@ namespace BLL
                 }
                 else
                 {
-                    data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-betMoney)).ToString();
+                    //data.yingkuijine = (Convert.ToDecimal(data.yingkuijine) + (-betMoney)).ToString();
                     data.xiazhuneirong = data.xiazhuneirong + item + "," + betMoney + "|";
                     data.biaozhu += "未中|";
                 }
