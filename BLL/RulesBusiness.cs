@@ -67,9 +67,8 @@ namespace BLL
             {
                 var sql = @"select  
                 ID '规则编号',
-	(CASE 
-	WHEN RuleType = 1 THEN '断开后投注'
-	END ) '规则类型',
+	(CASE WHEN RuleType = 1 THEN '断开后投注'
+               WHEN RuleType = 0 THEN '默认'END) '规则类型',
 			    IF(OddsID = 1,'规则1','规则2') as '赔率类型',
                 OpenContent '开奖内容',
                 JudgeCondition '判断投注条件',
@@ -207,7 +206,8 @@ namespace BLL
             IsProfitBetNow = {model.IsProfitBetNow},
             IsLossBetNow = {model.IsLossBetNow},
             BetGearStop = {model.BetGearStop},
-            CrackAfterBet = {model.CrackAfterBet}
+            CrackAfterBet = {model.CrackAfterBet},
+            RuleType ={model.RuleType}
             WHERE ID = {model.ID}";
 
                 var result = DAL.DbHelper.MysqlExecuteSql(sql, _connString);

@@ -78,6 +78,9 @@ namespace BLL
                     var ruleinfo = new RulesBusiness().GetRuleinfo(item);
                     switch (ruleinfo.RuleType)
                     {
+                        case 0://默认投注
+                            list.Add(Default(ruleinfo, dataList));
+                            break;
                         case 1://断开后投注
                             list.Add(DuanKaiHouTouZhu(ruleinfo, dataList));
                             break;
@@ -91,6 +94,110 @@ namespace BLL
             //var result = new List<AnalogData>();
             //return result;
             return list[0];
+        }
+
+        public List<AnalogData> Default(Ruleinfo rule, List<DataInfo> dataList)
+        {
+            var initList = InitAnalogData(dataList);
+
+            try
+            {
+                var number = 0;
+                var isBet = false;
+                var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                //投注条件算法
+                for (int i = 0; i < dataList.Count; i++)
+                {
+                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
+                    {
+                        break;
+                    }
+
+                    var item = dataList[i];
+
+                    //if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == (rule.JudgeCondition == "连续未开" ? 0 : 1))
+                    //{
+                    //    isBet = true;
+                    //    continue;
+                    //}
+                    //else
+                    //{
+                    //    number = 0;
+                    //}
+
+                    var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
+                    if (tempNumber == 0)
+                    {
+                        number = 0;
+                    }
+                    else
+                    {
+                        number += tempNumber;
+                    }
+
+                    if (number == rule.JudgeNumber && !isBet)
+                    {
+                        isBet = true;
+                        continue;
+                    }
+
+                    if (isBet)
+                    {
+                        isBet = false;
+                        number = 0;
+                        var model = BetAlgorithm(rule, item);//投注算法
+
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
+
+                        if (rule.IsLossBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) < 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
+                        }
+                        else if (rule.IsProfitBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) > 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
+                        }
+                    }
+                }
+
+
+                //这里单独计算当前金额
+                initList = CalculateCurrentAmount(initList);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return initList;
         }
 
         /// <summary>

@@ -30,6 +30,9 @@ namespace LotterySystem
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -62,9 +65,6 @@ namespace LotterySystem
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -112,6 +112,51 @@ namespace LotterySystem
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "自动投注规则";
             // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.CheckOnClick = true;
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Items.AddRange(new object[] {
+            "大",
+            "小",
+            "单",
+            "双",
+            "大单",
+            "大双",
+            "小单",
+            "小双",
+            "极大",
+            "极小",
+            "对子",
+            "顺子",
+            "豹子",
+            "特码13",
+            "特码14"});
+            this.checkedListBox1.Location = new System.Drawing.Point(6, 39);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(100, 244);
+            this.checkedListBox1.TabIndex = 64;
+            this.checkedListBox1.Visible = false;
+            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(20, 107);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 12);
+            this.label10.TabIndex = 63;
+            this.label10.Text = "亏损倍投";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(20, 78);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 12);
+            this.label7.TabIndex = 62;
+            this.label7.Text = "盈利倍投";
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -126,6 +171,7 @@ namespace LotterySystem
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
+            "0.默认",
             "1.断开后投注"});
             this.comboBox1.Location = new System.Drawing.Point(413, 157);
             this.comboBox1.Name = "comboBox1";
@@ -447,51 +493,6 @@ namespace LotterySystem
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(77, 20);
             this.comboBox2.TabIndex = 3;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(20, 78);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 12);
-            this.label7.TabIndex = 62;
-            this.label7.Text = "盈利倍投";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(20, 107);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(53, 12);
-            this.label10.TabIndex = 63;
-            this.label10.Text = "亏损倍投";
-            // 
-            // checkedListBox1
-            // 
-            this.checkedListBox1.CheckOnClick = true;
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Items.AddRange(new object[] {
-            "大",
-            "小",
-            "单",
-            "双",
-            "大单",
-            "大双",
-            "小单",
-            "小双",
-            "极大",
-            "极小",
-            "对子",
-            "顺子",
-            "豹子",
-            "特码13",
-            "特码14"});
-            this.checkedListBox1.Location = new System.Drawing.Point(6, 39);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(100, 244);
-            this.checkedListBox1.TabIndex = 64;
-            this.checkedListBox1.Visible = false;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
             // AddRules
             // 

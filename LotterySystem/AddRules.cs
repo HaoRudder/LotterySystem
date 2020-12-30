@@ -351,7 +351,7 @@ namespace LotterySystem
             checkBox3.CheckState = data.IsLossBetNow == 1 ? CheckState.Checked : CheckState.Unchecked;
             checkBox6.CheckState = data.IsProfitBetNow == 1 ? CheckState.Checked : CheckState.Unchecked;
             checkBox7.CheckState = data.BetGearStop == 1 ? CheckState.Checked : CheckState.Unchecked;
-            comboBox1.SelectedIndex = data.RuleType - 1;
+            comboBox1.SelectedIndex = data.RuleType;
         }
 
         public BLL.Ruleinfo GetRuleinfo(int id)
