@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Tool;
 namespace BLL
 {
     public class SimulationBusiness
@@ -195,6 +195,7 @@ namespace BLL
             }
             catch (Exception ex)
             {
+                ex.ToString().Log();
                 throw;
             }
             return initList;
@@ -378,6 +379,7 @@ namespace BLL
             }
             catch (Exception e)
             {
+
             }
             return -1;
         }

@@ -607,6 +607,17 @@ namespace Tool
             }
             return lst;
         }
+
+        /// <summary>
+        /// 记录日志
+        /// </summary>
+        /// <param name="log"></param>
+        public static void Log(this string log)
+        {
+            var content = DateTime.Now + log + "\n\n";
+            var time = DateTime.Now.ToString("yyyyMMdd");
+            WriteFile(Environment.CurrentDirectory + "\\LogFiles\\" + time, time + "log.log", content, true);
+        }
     }
 
     public enum ConfigurationType
