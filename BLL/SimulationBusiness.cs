@@ -84,6 +84,9 @@ namespace BLL
                         case 1://断开后投注
                             list.Add(DuanKaiHouTouZhu(ruleinfo, dataList));
                             break;
+                        case 2://连续倍投
+                            list.Add(ContinuityDoubleBet(ruleinfo, dataList));
+                            break;
                     }
                 }
             }
@@ -96,6 +99,146 @@ namespace BLL
             return list[0];
         }
 
+        /// <summary>
+        /// 连续倍投
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        public List<AnalogData> ContinuityDoubleBet(Ruleinfo rule, List<DataInfo> dataList)
+        {
+            var initList = InitAnalogData(dataList);
+            try
+            {
+                var number = 0;
+                var isBet = false;
+                var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                //投注条件算法
+                for (int i = 0; i < dataList.Count; i++)
+                {
+                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
+                    {
+                        break;
+                    }
+                    var item = dataList[i];
+
+                    var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
+                    if (tempNumber == 0)
+                    {
+                        number = 0;
+                    }
+                    else
+                    {
+                        number += tempNumber;
+                    }
+
+                    if (number == rule.JudgeNumber && !isBet)
+                    {
+                        isBet = true;
+                        continue;
+                    }
+
+                    if (isBet)
+                    {
+                        isBet = false;
+                        number = 0;
+                        var model = BetAlgorithm(rule, item);//投注算法
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
+
+
+                        var noWinBetNumber = 0;
+                        var over = false;
+                        while (noWinBetNumber < rule.NoWinBetNumber)
+                        {
+                            var temp = dataList[i + 1];
+                            if (JudgeBetCondition(rule.OpenContent, "连续开出", temp) == 1)
+                            {
+                                noWinBetNumber++;
+                            }
+                            else {
+                                noWinBetNumber = 0;
+                            }
+                            if (rule.NoWinBetNumber >= noWinBetNumber)
+                            {
+                                model = BetAlgorithm(rule, temp);//投注算法
+
+                                foreach (var tmp in initList.Where(tmp => tmp.id == model.id))
+                                {
+                                    tmp.biaozhu = model.biaozhu ?? string.Empty;
+                                    tmp.xiazhuneirong = model.xiazhuneirong;
+                                    tmp.yingkuijine = model.yingkuijine;
+                                }
+                            }
+                            i++;
+                        }
+
+                        if (over)
+                        {
+                            continue;
+                        }
+                        foreach (var temp in initList.Where(temp => temp.id == model.id))
+                        {
+                            temp.biaozhu = model.biaozhu ?? string.Empty;
+                            temp.xiazhuneirong = model.xiazhuneirong;
+                            temp.yingkuijine = model.yingkuijine;
+                        }
+
+                        if (rule.IsLossBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) < 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
+                        }
+                        else if (rule.IsProfitBetNow == 1)
+                        {
+                            while (Convert.ToDecimal(model.yingkuijine) > 0)
+                            {
+                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+
+                                foreach (var temp in initList.Where(temp => temp.id == model.id))
+                                {
+                                    temp.biaozhu = model.biaozhu ?? string.Empty;
+                                    temp.xiazhuneirong = model.xiazhuneirong;
+                                    temp.yingkuijine = model.yingkuijine;
+                                }
+                                i++;
+                            }
+                        }
+                    }
+                }
+                //这里单独计算当前金额
+                initList = CalculateCurrentAmount(initList);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString().Log();
+                throw;
+            }
+            return initList;
+        }
+
+        /// <summary>
+        /// 默认投注算法
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
         public List<AnalogData> Default(Ruleinfo rule, List<DataInfo> dataList)
         {
             var initList = InitAnalogData(dataList);

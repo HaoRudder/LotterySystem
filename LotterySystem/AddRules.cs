@@ -443,5 +443,16 @@ namespace LotterySystem
                 }
             }
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 2)
+            {
+                label4.Text = "期开出后停止";
+            }
+            else {
+                label4.Text = "期不中开始投注";
+            }
+        }
     }
 }
