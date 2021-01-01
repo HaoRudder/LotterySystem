@@ -68,7 +68,9 @@ namespace BLL
                 var sql = @"select  
                 ID '规则编号',
 	(CASE WHEN RuleType = 1 THEN '断开后投注'
-               WHEN RuleType = 0 THEN '默认'END) '规则类型',
+                WHEN RuleType = 0 THEN '默认'
+                WHEN RuleType = 2 THEN '连续倍投'
+                END) '规则类型',
 			    IF(OddsID = 1,'规则1','规则2') as '赔率类型',
                 OpenContent '开奖内容',
                 JudgeCondition '判断投注条件',

@@ -145,13 +145,7 @@ namespace BLL
                         isBet = false;
                         number = 0;
                         var model = BetAlgorithm(rule, item);//投注算法
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
-
+                        initList = Assignment(initList, model);
 
                         var noWinBetNumber = 0;
                         var over = false;
@@ -162,19 +156,15 @@ namespace BLL
                             {
                                 noWinBetNumber++;
                             }
-                            else {
+                            else
+                            {
                                 noWinBetNumber = 0;
                             }
                             if (rule.NoWinBetNumber >= noWinBetNumber)
                             {
                                 model = BetAlgorithm(rule, temp);//投注算法
 
-                                foreach (var tmp in initList.Where(tmp => tmp.id == model.id))
-                                {
-                                    tmp.biaozhu = model.biaozhu ?? string.Empty;
-                                    tmp.xiazhuneirong = model.xiazhuneirong;
-                                    tmp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                             }
                             i++;
                         }
@@ -183,25 +173,14 @@ namespace BLL
                         {
                             continue;
                         }
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
-
+                        initList = Assignment(initList, model);
                         if (rule.IsLossBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) < 0)
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -211,12 +190,7 @@ namespace BLL
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -292,12 +266,7 @@ namespace BLL
                         number = 0;
                         var model = BetAlgorithm(rule, item);//投注算法
 
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
+                        initList = Assignment(initList, model);
 
                         if (rule.IsLossBetNow == 1)
                         {
@@ -305,12 +274,7 @@ namespace BLL
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -320,12 +284,7 @@ namespace BLL
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -404,12 +363,7 @@ namespace BLL
                         number = 0;
                         var model = BetAlgorithm(rule, item);//投注算法
 
-                        foreach (var temp in initList.Where(temp => temp.id == model.id))
-                        {
-                            temp.biaozhu = model.biaozhu ?? string.Empty;
-                            temp.xiazhuneirong = model.xiazhuneirong;
-                            temp.yingkuijine = model.yingkuijine;
-                        }
+                        initList = Assignment(initList, model);
 
                         if (rule.IsLossBetNow == 1)
                         {
@@ -417,12 +371,7 @@ namespace BLL
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -432,12 +381,7 @@ namespace BLL
                             {
                                 model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
 
-                                foreach (var temp in initList.Where(temp => temp.id == model.id))
-                                {
-                                    temp.biaozhu = model.biaozhu ?? string.Empty;
-                                    temp.xiazhuneirong = model.xiazhuneirong;
-                                    temp.yingkuijine = model.yingkuijine;
-                                }
+                                initList = Assignment(initList, model);
                                 i++;
                             }
                         }
@@ -496,27 +440,6 @@ namespace BLL
                         return 1;
                     }
                 }
-
-                //foreach (var item in list)
-                //{
-                //    var openStr = GetWinContent(row, item);
-                //    if (!string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续开出")
-                //    {
-                //        number++;
-                //        return 1;
-                //    }
-
-                //    if (string.IsNullOrWhiteSpace(openStr) && judgeCondition == "连续未开")
-                //    {
-                //        number++;
-                //        return 1;
-                //    }
-
-                //    if (number == list.Length)
-                //    {
-                //        return 1;
-                //    }
-                //}
 
                 return 0;
             }
@@ -766,6 +689,16 @@ namespace BLL
                 }
             }
             return list;
+        }
+        public List<AnalogData> Assignment(List<AnalogData> initList, AnalogData model)
+        {
+            foreach (var temp in initList.Where(temp => temp.id == model.id))
+            {
+                temp.biaozhu = model.biaozhu ?? string.Empty;
+                temp.xiazhuneirong = model.xiazhuneirong;
+                temp.yingkuijine = model.yingkuijine;
+            }
+            return initList;
         }
     }
     public class AnalogData
