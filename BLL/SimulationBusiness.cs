@@ -151,6 +151,10 @@ namespace BLL
                         var over = false;
                         while (noWinBetNumber < rule.NoWinBetNumber)
                         {
+                            if (i == dataList.Count - 1)
+                            {
+                                break;
+                            }
                             var temp = dataList[i + 1];
                             if (JudgeBetCondition(rule.OpenContent, "连续开出", temp) == 1)
                             {
