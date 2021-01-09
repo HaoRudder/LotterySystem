@@ -72,7 +72,7 @@ namespace GetTheLatestData
 
                     var newData = new DataSet();
                     var dbDonn =
-                        $"Data Source = {_dbAddress}; Initial Catalog = {_dbName}; User ID = {_dbAcc}; Password = {_dbPwd};PORT= 33060 ;Character Set=utf8;Allow User Variables=True";
+                        $"Data Source = {_dbAddress}; Initial Catalog = {_dbName}; User ID = {_dbAcc}; Password = {_dbPwd};PORT= 3306 ;Character Set=utf8;Allow User Variables=True";
                     var Localhost =
                         $"Data Source =localhost; Initial Catalog = {_testDBName}; User ID = {_testDbAcc}; Password = {_testDbPwd};Character Set=utf8; Allow User Variables=True";
                     foreach (var item in tableList)

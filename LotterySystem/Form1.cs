@@ -528,8 +528,8 @@ namespace LotterySystem
         {
             switch (comboBox1.Text)
             {
-                case "加拿大28": table = "canada "; break;
-                case "北京28": table = "china "; break;
+                case "加拿大28": table = "canada28"; break;
+                case "北京28": table = "beijing28"; break;
                 case "新疆28": table = "`新疆28` "; break;
                 case "重庆28": table = "`重庆28` "; break;
             }

@@ -184,6 +184,7 @@ namespace LotterySystem
 
             begin.Text = beginTime.AddDays(-1).ToString();
             end.Text = endTime.AddDays(-1).ToString();
+            button2_Click_1(null, null);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -193,6 +194,8 @@ namespace LotterySystem
 
             begin.Text = beginTime.AddMonths(-1).ToString();
             end.Text = endTime.AddMonths(-1).ToString();
+
+            button2_Click_1(null, null);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -202,6 +205,7 @@ namespace LotterySystem
 
             begin.Text = beginTime.AddDays(1).ToString();
             end.Text = endTime.AddDays(1).ToString();
+            button2_Click_1(null, null);
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -211,6 +215,7 @@ namespace LotterySystem
 
             begin.Text = beginTime.AddMonths(1).ToString();
             end.Text = endTime.AddMonths(1).ToString();
+            button2_Click_1(null, null);
         }
     }
 }
