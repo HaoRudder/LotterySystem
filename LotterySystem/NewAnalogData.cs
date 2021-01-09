@@ -176,5 +176,41 @@ namespace LotterySystem
                 }
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var beginTime = Convert.ToDateTime(begin.Text);
+            var endTime = Convert.ToDateTime(end.Text);
+
+            begin.Text = beginTime.AddDays(-1).ToString();
+            end.Text = endTime.AddDays(-1).ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var beginTime = Convert.ToDateTime(begin.Text);
+            var endTime = Convert.ToDateTime(end.Text);
+
+            begin.Text = beginTime.AddMonths(-1).ToString();
+            end.Text = endTime.AddMonths(-1).ToString();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var beginTime = Convert.ToDateTime(begin.Text);
+            var endTime = Convert.ToDateTime(end.Text);
+
+            begin.Text = beginTime.AddDays(1).ToString();
+            end.Text = endTime.AddDays(1).ToString();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var beginTime = Convert.ToDateTime(begin.Text);
+            var endTime = Convert.ToDateTime(end.Text);
+
+            begin.Text = beginTime.AddMonths(1).ToString();
+            end.Text = endTime.AddMonths(1).ToString();
+        }
     }
 }

@@ -112,16 +112,13 @@ namespace BLL
             {
                 var number = 0;
                 var isBet = false;
+                var IsSatisfyBetGearStop = false;//倍投完档位后立即停止变量
                 var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
                 var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 //投注条件算法
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
-                    {
-                        break;
-                    }
                     var item = dataList[i];
 
                     var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
@@ -144,10 +141,20 @@ namespace BLL
                     {
                         isBet = false;
                         number = 0;
-                        var model = BetAlgorithm(rule, item);//投注算法
+                        var noWinBetNumber = 0;
+                        var model = BetAlgorithm(rule, item, out IsSatisfyBetGearStop);//投注算法
+
+                        if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                        {
+                            break;
+                        }
+
+                        if (JudgeBetCondition(rule.OpenContent, "连续开出", item) == 1) //这里也要把当前投注的也算进去
+                        {
+                            noWinBetNumber++;
+                        }
                         initList = Assignment(initList, model);
 
-                        var noWinBetNumber = 0;
                         var over = false;
                         while (noWinBetNumber < rule.NoWinBetNumber)
                         {
@@ -166,9 +173,13 @@ namespace BLL
                             }
                             if (rule.NoWinBetNumber >= noWinBetNumber)
                             {
-                                model = BetAlgorithm(rule, temp);//投注算法
-
+                                model = BetAlgorithm(rule, temp, out IsSatisfyBetGearStop);//投注算法
                                 initList = Assignment(initList, model);
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                             i++;
                         }
@@ -182,22 +193,35 @@ namespace BLL
                         {
                             while (Convert.ToDecimal(model.yingkuijine) < 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
-
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
                                 initList = Assignment(initList, model);
                                 i++;
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
                         else if (rule.IsProfitBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) > 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
-
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
                                 initList = Assignment(initList, model);
                                 i++;
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
+                    }
+
+                    if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                    {
+                        break;
                     }
                 }
                 //这里单独计算当前金额
@@ -225,28 +249,14 @@ namespace BLL
             {
                 var number = 0;
                 var isBet = false;
+                var IsSatisfyBetGearStop = false;//倍投完档位后立即停止变量
                 var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
                 var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 //投注条件算法
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
-                    {
-                        break;
-                    }
-
                     var item = dataList[i];
-
-                    //if (JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item) == (rule.JudgeCondition == "连续未开" ? 0 : 1))
-                    //{
-                    //    isBet = true;
-                    //    continue;
-                    //}
-                    //else
-                    //{
-                    //    number = 0;
-                    //}
 
                     var tempNumber = JudgeBetCondition(rule.OpenContent, rule.JudgeCondition, item);
                     if (tempNumber == 0)
@@ -268,33 +278,47 @@ namespace BLL
                     {
                         isBet = false;
                         number = 0;
-                        var model = BetAlgorithm(rule, item);//投注算法
-
+                        var model = BetAlgorithm(rule, item, out IsSatisfyBetGearStop);//投注算法
                         initList = Assignment(initList, model);
+                        if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                        {
+                            break;
+                        }
 
                         if (rule.IsLossBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) < 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
-
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
                                 initList = Assignment(initList, model);
                                 i++;
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
                         else if (rule.IsProfitBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) > 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
-
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
                                 initList = Assignment(initList, model);
                                 i++;
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
+                    if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                    {
+                        break;
+                    }
                 }
-
 
                 //这里单独计算当前金额
                 initList = CalculateCurrentAmount(initList);
@@ -320,7 +344,8 @@ namespace BLL
             {
                 var number = 0;
                 var isSatisfied = false;
-                var isBet = false;
+                var isBet = false; //是否投注
+                var IsSatisfyBetGearStop = false;//倍投完档位后立即停止变量
 
                 var lossMultipleList = rule.LossMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
                 var profitMultipleList = rule.ProfitMultiple.Split('|').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -328,11 +353,6 @@ namespace BLL
                 //投注条件算法
                 for (int i = 0; i < dataList.Count; i++)
                 {
-                    if (rule.BetGearStop == 1 && (rule.LossMultipleLevel == lossMultipleList.Length - 1 || rule.ProfitMultipleLevel == profitMultipleList.Length - 1))
-                    {
-                        break;
-                    }
-
                     var item = dataList[i];
                     if (isSatisfied)
                     {
@@ -365,30 +385,47 @@ namespace BLL
                     {
                         isBet = false;
                         number = 0;
-                        var model = BetAlgorithm(rule, item);//投注算法
-
+                        var model = BetAlgorithm(rule, item, out IsSatisfyBetGearStop);//投注算法
                         initList = Assignment(initList, model);
+
+                        if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                        {
+                            break;
+                        }
 
                         if (rule.IsLossBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) < 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
 
                                 initList = Assignment(initList, model);
                                 i++;
+
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
                         else if (rule.IsProfitBetNow == 1)
                         {
                             while (Convert.ToDecimal(model.yingkuijine) > 0)
                             {
-                                model = BetAlgorithm(rule, dataList[i + 1]);//投注算法
+                                model = BetAlgorithm(rule, dataList[i + 1], out IsSatisfyBetGearStop);//投注算法
 
                                 initList = Assignment(initList, model);
                                 i++;
+                                if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                                {
+                                    break;
+                                }
                             }
                         }
+                    }
+                    if (IsSatisfyBetGearStop) //满足倍投完后停止条件
+                    {
+                        break;
                     }
                 }
 
@@ -460,8 +497,9 @@ namespace BLL
         /// <param name="rule"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public AnalogData BetAlgorithm(Ruleinfo rule, DataInfo item)
+        public AnalogData BetAlgorithm(Ruleinfo rule, DataInfo item, out bool IsSatisfyBetGearStop)
         {
+            IsSatisfyBetGearStop = false;
             AnalogData model;
             try
             {
@@ -498,6 +536,11 @@ namespace BLL
 
                     if (rule.ProfitMultipleLevel >= profitMultiple.Length)
                     {
+                        //倍投完档位后立即停止
+                        if (rule.BetGearStop == 1 && profitMultiple.Length > 0)
+                        {
+                            IsSatisfyBetGearStop = true;
+                        }
                         rule.ProfitMultipleLevel = 0;
                     }
                     rule.LossMultipleLevel = -1;
@@ -506,6 +549,11 @@ namespace BLL
                 {
                     if (rule.LossMultipleLevel >= lossMultiple.Length - 1)
                     {
+                        //倍投完档位后立即停止
+                        if (rule.BetGearStop == 1 && lossMultiple.Length > 0)
+                        {
+                            IsSatisfyBetGearStop = true;
+                        }
                         rule.LossMultipleLevel = 0;
                     }
                     else
